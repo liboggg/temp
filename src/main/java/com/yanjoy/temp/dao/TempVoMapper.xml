@@ -103,7 +103,7 @@
             <result column="healthCreateDay" jdbcType="VARCHAR" property="createDay"/>
             <result column="healthChange" jdbcType="DECIMAL" property="whetherChange"/>
         </association>
-<!--
+
         <association property="bloodTest" javaType="com.yanjoy.temp.entity.entry.TempEntry">
             <id column="bloodId" jdbcType="VARCHAR" property="id"/>
             <result column="bloodIdCard" jdbcType="VARCHAR" property="idCard"/>
@@ -144,7 +144,7 @@
             <result column="workSChange" jdbcType="DECIMAL" property="whetherChange"/>
             <result column="workSTestDay" jdbcType="TIMESTAMP" property="testDate"/>
             <result column="workSRestult" jdbcType="DECIMAL" property="testResult"/>
-        </association>-->
+        </association>
 
         <collection property="temp" ofType="com.yanjoy.temp.entity.detail.TempDetail">
             <id column="detailId" jdbcType="VARCHAR" property="id"/>
