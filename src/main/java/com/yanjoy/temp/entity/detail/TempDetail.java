@@ -65,9 +65,11 @@ public class TempDetail {
             return alarm;
         }
         if (temperature != null && upperLimit != null) {
-            if (temperature.doubleValue() < upperLimit.doubleValue()) {
+            if (temperature.doubleValue() <= upperLimit.doubleValue()) {
+                this.alarm = 0;
                 return 0;
             } else {
+                this.alarm = 1;
                 return 1;
             }
         }
