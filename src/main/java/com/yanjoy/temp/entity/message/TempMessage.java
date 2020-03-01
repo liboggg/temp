@@ -72,6 +72,8 @@ public class TempMessage {
      */
     private String workStatus;
 
+
+
     /**
      * 定位
      */
