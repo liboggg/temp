@@ -33,6 +33,14 @@ public class TempTimeUtils {
         return date;
     }
 
+    public static String dateToFullStr(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return format.format(date);
+
+    }
+
+
     /**
      * 根据当前时间返回体温阶段
      * 1 00:00:00 - 08:30:00
@@ -88,5 +96,17 @@ public class TempTimeUtils {
         calendar.add(Calendar.DAY_OF_MONTH, afterDays);
         date = calendar.getTime();
         return date;
+    }
+
+    public static Date ymdToDate(String day) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(day);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+
     }
 }
