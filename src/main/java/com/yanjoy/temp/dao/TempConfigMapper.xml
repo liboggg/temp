@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanjoy.temp.dao.TempConfigMapper">
+    <resultMap id="BaseResultMap" type="com.yanjoy.temp.entity.config.TempConfig">
+        <!--@mbg.generated-->
+        <!--@Table YJ_TEMP_CONFIG-->
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="UPPER_LIMIT" jdbcType="DECIMAL" property="upperLimit"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        ID, UPPER_LIMIT
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from YJ_TEMP_CONFIG
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        <!--@mbg.generated-->
+        delete from YJ_TEMP_CONFIG
+    </delete>
+    <insert id="insert" parameterType="com.yanjoy.temp.entity.config.TempConfig">
+        <!--@mbg.generated-->
+        insert into YJ_TEMP_CONFIG (ID, UPPER_LIMIT)
+        values (#{id,jdbcType=VARCHAR}, #{upperLimit,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.yanjoy.temp.entity.config.TempConfig">
+        <!--@mbg.generated-->
+        insert into YJ_TEMP_CONFIG
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="upperLimit != null">
+                UPPER_LIMIT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="upperLimit != null">
+                #{upperLimit,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yanjoy.temp.entity.config.TempConfig">
+        <!--@mbg.generated-->
+        update YJ_TEMP_CONFIG
+        <set>
+            <if test="upperLimit != null">
+                UPPER_LIMIT = #{upperLimit,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yanjoy.temp.entity.config.TempConfig">
+        <!--@mbg.generated-->
+        update YJ_TEMP_CONFIG
+        set UPPER_LIMIT = #{upperLimit,jdbcType=DECIMAL}
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="getTempConfig" resultType="java.math.BigDecimal">
+    select
+     UPPER_LIMIT
+    from YJ_TEMP_CONFIG where rownum <![CDATA[ < ]]> 2
+  </select>
+</mapper>

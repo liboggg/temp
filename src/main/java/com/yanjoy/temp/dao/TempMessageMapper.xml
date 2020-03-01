@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanjoy.temp.dao.TempMessageMapper">
+    <resultMap id="BaseResultMap" type="com.yanjoy.temp.entity.message.TempMessage">
+        <!--@mbg.generated-->
+        <!--@Table YJ_TEMP_MESSAGE-->
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="ID_CARD" jdbcType="VARCHAR" property="idCard"/>
+        <result column="PROVINCE" jdbcType="VARCHAR" property="province"/>
+        <result column="ADDRESS" jdbcType="VARCHAR" property="address"/>
+        <result column="ROUTE" jdbcType="VARCHAR" property="route"/>
+        <result column="CONTACT_HISTORY" jdbcType="VARCHAR" property="contactHistory"/>
+        <result column="AREA_HISTORY" jdbcType="VARCHAR" property="areaHistory"/>
+        <result column="PERSON_HISTORY" jdbcType="VARCHAR" property="personHistory"/>
+        <result column="HEALTH" jdbcType="VARCHAR" property="health"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="CREATE_DAY" jdbcType="VARCHAR" property="createDay"/>
+        <result column="NOTE" jdbcType="VARCHAR" property="note"/>
+        <result column="DETAIL_ID" jdbcType="VARCHAR" property="detailId"/>
+        <result column="BLOOD_TEST" jdbcType="VARCHAR" property="bloodTest"/>
+        <result column="NUCLEASE_TEST" jdbcType="VARCHAR" property="nucleaseTest"/>
+        <result column="WORK_STATUS" jdbcType="VARCHAR" property="workStatus"/>
+        <result column="LACATION" jdbcType="VARCHAR" property="location"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        ID, ID_CARD, PROVINCE, ADDRESS, ROUTE, CONTACT_HISTORY, AREA_HISTORY, PERSON_HISTORY,
+        HEALTH, CREATE_DATE, CREATE_DAY, NOTE,DETAIL_ID,BLOOD_TEST,NUCLEASE_TEST,WORK_STATUS,
+        LACATION
+    </sql>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        <!--@mbg.generated-->
+        delete from YJ_TEMP_MESSAGE
+        where ID = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.yanjoy.temp.entity.message.TempMessage">
+        <!--@mbg.generated-->
+        insert into YJ_TEMP_MESSAGE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="idCard != null">
+                ID_CARD,
+            </if>
+            <if test="province != null">
+                PROVINCE,
+            </if>
+            <if test="address != null">
+                ADDRESS,
+            </if>
+            <if test="route != null">
+                ROUTE,
+            </if>
+            <if test="contactHistory != null">
+                CONTACT_HISTORY,
+            </if>
+            <if test="areaHistory != null">
+                AREA_HISTORY,
+            </if>
+            <if test="personHistory != null">
+                PERSON_HISTORY,
+            </if>
+            <if test="health != null">
+                HEALTH,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="createDay != null">
+                CREATE_DAY,
+            </if>
+            <if test="note != null">
+                NOTE,
+            </if>
+            <if test="detailId != null">
+                DETAIL_ID,
+            </if>
+            <if test="bloodTest != null">
+                BLOOD_TEST,
+            </if>
+            <if test="nucleaseTest != null">
+                NUCLEASE_TEST,
+            </if>
+            <if test="workStatus != null">
+                WORK_STATUS,
+            </if>
+            <if test="location != null">
+                LACATION,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="route != null">
+                #{route,jdbcType=VARCHAR},
+            </if>
+            <if test="contactHistory != null">
+                #{contactHistory,jdbcType=VARCHAR},
+            </if>
+            <if test="areaHistory != null">
+                #{areaHistory,jdbcType=VARCHAR},
+            </if>
+            <if test="personHistory != null">
+                #{personHistory,jdbcType=VARCHAR},
+            </if>
+            <if test="health != null">
+                #{health,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDay != null">
+                #{createDay,jdbcType=VARCHAR},
+            </if>
+
+            <if test="note != null">
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="detailId != null">
+                #{detailId,jdbcType=VARCHAR},
+            </if>
+            <if test="bloodTest != null">
+                #{bloodTest,jdbcType=VARCHAR},
+            </if>
+            <if test="nucleaseTest != null">
+                #{nucleaseTest,jdbcType=VARCHAR},
+            </if>
+            <if test="workStatus != null">
+                #{workStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="location != null">
+                #{location,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yanjoy.temp.entity.message.TempMessage">
+        <!--@mbg.generated-->
+        update YJ_TEMP_MESSAGE
+        <set>
+            <if test="idCard != null">
+                ID_CARD = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                PROVINCE = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                ADDRESS = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="route != null">
+                ROUTE = #{route,jdbcType=VARCHAR},
+            </if>
+            <if test="contactHistory != null">
+                CONTACT_HISTORY = #{contactHistory,jdbcType=VARCHAR},
+            </if>
+            <if test="areaHistory != null">
+                AREA_HISTORY = #{areaHistory,jdbcType=VARCHAR},
+            </if>
+            <if test="personHistory != null">
+                PERSON_HISTORY = #{personHistory,jdbcType=VARCHAR},
+            </if>
+            <if test="health != null">
+                HEALTH = #{health,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDay != null">
+                CREATE_DAY = #{createDay,jdbcType=VARCHAR},
+            </if>
+
+            <if test="note != null">
+                NOTE = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="detailId != null">
+                DETAIL_ID = #{detailId,jdbcType=VARCHAR},
+            </if>
+            <if test="bloodTest != null">
+                BLOOD_TEST = #{bloodTest,jdbcType=VARCHAR},
+            </if>
+            <if test="nucleaseTest != null">
+                NUCLEASE_TEST = #{nucleaseTest,jdbcType=VARCHAR},
+            </if>
+            <if test="workStatus != null">
+                WORK_STATUS = #{workStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="location != null">
+                LACATION = #{location,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from YJ_TEMP_MESSAGE
+        <where>
+            <if test="id != null">
+                ID = #{id}
+            </if>
+
+            <if test="idCard != null">
+                and ID_CARD = #{idCard}
+            </if>
+
+            <if test="dateDay != null">
+                and CREATE_DAY = #{dateDay}
+            </if>
+
+            <if test="startTime != null ">
+                and CREATE_DATE >= #{startTime}
+            </if>
+
+            <if test="endTime != null">
+                and CREATE_DATE  <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </where>
+        order by CREATE_DATE desc
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from YJ_TEMP_MESSAGE
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+</mapper>

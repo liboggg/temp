@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanjoy.temp.dao.TempUserMapper">
+    <resultMap id="BaseResultMap" type="com.yanjoy.temp.entity.user.TempUser">
+        <!--@mbg.generated-->
+        <!--@Table YJ_TEMP_USER-->
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="ID_CARD" jdbcType="VARCHAR" property="idCard"/>
+        <result column="USER_NAME" jdbcType="VARCHAR" property="userName"/>
+        <result column="PHONE" jdbcType="VARCHAR" property="phone"/>
+        <result column="ORG_ID" jdbcType="VARCHAR" property="orgId"/>
+        <result column="ORG_NAME" jdbcType="VARCHAR" property="orgName"/>
+        <result column="COMPANY" jdbcType="VARCHAR" property="company"/>
+        <result column="PROJECT_ID" jdbcType="VARCHAR" property="projectId"/>
+        <result column="STATUS" jdbcType="DECIMAL" property="status"/>
+        <result column="PERSON_TYPE" jdbcType="VARCHAR" property="personType"/>
+        <result column="AGE" jdbcType="DECIMAL" property="age"/>
+        <result column="SEX" jdbcType="VARCHAR" property="sex"/>
+        <result column="STAY_STATUS" jdbcType="DECIMAL" property="stayStatus"/>
+        <result column="COME_DATE" jdbcType="VARCHAR" property="comeDate"/>
+        <result column="FINISH_DATE" jdbcType="VARCHAR" property="finishDate"/>
+        <result column="COME_AREA" jdbcType="VARCHAR" property="comeArea"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        ID, ID_CARD, USER_NAME, PHONE, ORG_ID, ORG_NAME, COMPANY, PROJECT_ID, "STATUS",
+        PERSON_TYPE,AGE,SEX,STAY_STATUS, COME_DATE, FINISH_DATE,COME_AREA
+    </sql>
+    <select id="selectByIdCard" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from YJ_TEMP_USER
+        where
+        ID_CARD = #{idCardOrPhone}
+        or
+        phone = #{idCardOrPhone}
+    </select>
+    <insert id="insertSelective" parameterType="com.yanjoy.temp.entity.user.TempUser">
+        <!--@mbg.generated-->
+        insert into YJ_TEMP_USER
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="idCard != null">
+                ID_CARD,
+            </if>
+            <if test="userName != null">
+                USER_NAME,
+            </if>
+            <if test="phone != null">
+                PHONE,
+            </if>
+            <if test="orgId != null">
+                ORG_ID,
+            </if>
+            <if test="orgName != null">
+                ORG_NAME,
+            </if>
+            <if test="company != null">
+                COMPANY,
+            </if>
+            <if test="projectId != null">
+                PROJECT_ID,
+            </if>
+            <if test="status != null">
+                "STATUS",
+            </if>
+            <if test="personType != null">
+                PERSON_TYPE,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="stayStatus != null">
+                STAY_STATUS,
+            </if>
+            <if test="comeDate != null">
+                COME_DATE,
+            </if>
+            <if test="finishDate != null">
+                FINISH_DATE,
+            </if>
+            <if test="comeArea != null">
+                COME_AREA,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId != null">
+                #{orgId,jdbcType=VARCHAR},
+            </if>
+            <if test="orgName != null">
+                #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="company != null">
+                #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="projectId != null">
+                #{projectId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=DECIMAL},
+            </if>
+            <if test="personType != null">
+                #{personType,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=NUMERIC},
+            </if>
+            <if test="stayStatus != null">
+                #{stayStatus,jdbcType=DECIMAL},
+            </if>
+            <if test="comeDate != null">
+                #{comeDate,jdbcType=VARCHAR},
+            </if>
+            <if test="finishDate != null">
+                #{finishDate,jdbcType=VARCHAR},
+            </if>
+            <if test="comeArea != null">
+                #{comeArea,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yanjoy.temp.entity.user.TempUser">
+        <!--@mbg.generated-->
+        update YJ_TEMP_USER
+        <set>
+            <if test="idCard != null">
+                ID_CARD = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                USER_NAME = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                PHONE = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId != null">
+                ORG_ID = #{orgId,jdbcType=VARCHAR},
+            </if>
+            <if test="orgName != null">
+                ORG_NAME = #{orgName,jdbcType=VARCHAR},
+            </if>
+            <if test="company != null">
+                COMPANY = #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="projectId != null">
+                PROJECT_ID = #{projectId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                "STATUS" = #{status,jdbcType=DECIMAL},
+            </if>
+            <if test="personType != null">
+                PERSON_TYPE = #{personType,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=NUMERIC},
+            </if>
+            <if test="stayStatus != null">
+                STAY_STATUS = #{stayStatus,jdbcType=DECIMAL},
+            </if>
+            <if test="comeDate != null">
+                COME_DATE = #{comeDate,jdbcType=VARCHAR},
+            </if>
+            <if test="finishDate != null">
+                FINISH_DATE = #{finishDate,jdbcType=VARCHAR},
+            </if>
+            <if test="comeArea != null">
+                COME_AREA =  #{comeArea,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateLeave" parameterType="java.lang.String">
+        <!--@mbg.generated-->
+        update YJ_TEMP_USER
+        set "STATUS" = 1
+        where
+        ID_CARD = #{idCard}
+        or
+        phone = #{idCard}
+    </update>
+
+    <update id="updateComeBack" parameterType="java.lang.String">
+        <!--@mbg.generated-->
+        update YJ_TEMP_USER
+        set "STATUS" = 0
+        where
+        ID_CARD = #{idCard}
+        or
+        phone = #{idCard}
+    </update>
+    <select id="getPlatUserInfo" resultType="com.yanjoy.temp.entity.user.UserInfo">
+        select * from (
+        select
+        yu.id_card idCard,
+        yu.name userName,
+        yu.phone,
+        (case when yu.sex = 1 then '女' else '男' end) sex,
+        'gl' personType
+        from yj_user yu
+        where yu.type != 2 or yu.type is null
+        union
+        select
+        yu.id_card idCard,
+        yu.name userName,
+        yu.phone,
+        yd.dict_name sex,
+        'lw' personType
+        from yj_user yu
+        left  join YJ_LABOUR_PERSON ylp on ylp.idcard =yu.id_card
+        left join(select dict_code ,dict_name from yj_dict where parent_code ='P12')yd on yd.dict_code = ylp.sex
+        where yu.type = 2) where idCard =#{id} or phone = #{id}
+    </select>
+</mapper>

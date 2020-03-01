@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanjoy.temp.dao.OrgMapper">
+
+    <sql id="organization_column">
+        o.ID,
+        case when o.type>6 then
+        o.city_code||o.industry_code||o.industry_number||o.work_point_code||o.work_point_number||o.specialty_code||o.specialty_number
+        	||'-'||o.position_Code||o.position_Number||o.position_Level
+          else
+          o.city_code||o.industry_code||o.industry_number||o.work_point_code||o.work_point_number||o.specialty_code||o.specialty_number end as code,
+        o.name_phonetic as namePhonetic,
+        o.zone_code as zoneCode,
+        o.project_type as projectType,
+        o.project_id as projectId,
+        o.NAME,
+        o.DES,
+        o.PARENT_ID as parentId,
+        o.organization_id as organizationId,
+        o.TREE_LEVEL as treeLevel,
+        o.type as type,
+        o.station_Type as stationType,
+        o.secondCompany_name as secondCompanyName,
+        o.thirdCompany_name as thirdCompanyName,
+        o.SORT as sort,
+        o.CREATE_USER_ID as createUserId,
+        o.CREATE_DATE as createDate,
+        o.EDIT_USER_ID as editUserId,
+        o.EDIT_DATE as editDate,
+        o.DELETE_FLAG as deleteFlag,
+        o.city_Id as cityId,
+        o.city_Type as cityType,
+        o.city_Code as cityCode,
+        o.industry_Id as industryId,
+        o.industry_Type as industryType,
+        o.industry_Code as industryCode,
+        o.industry_Number as industryNumber,
+        o.work_point_Id as workPointId,
+        o.work_point_type as workPointType,
+        o.work_point_code as workPointCode,
+        o.work_point_number as workPointNumber,
+        o.bim_id as bimId,
+        o.specialty_id as specialtyId,
+        o.specialty_type as specialtyType,
+        o.specialty_code as specialtyCode,
+        o.specialty_number as specialtyNumber,
+        o.position_id as positionId,
+        o.position_type as positionType,
+        o.position_code as positionCode,
+        o.position_number as positionNumber,
+        o.position_Level as positionLevel,
+        nvl(o.adress,' ') as adress,
+        o.marker,
+        o.hasB3D,
+        o.province_Value as provinceValue,
+        nvl(o.province_Name,' ') as provinceName,
+        o.city_Value as cityValue,
+        nvl(o.city_Name,' ') as cityName,
+        o.area_Value as areaValue,
+        nvl(o.area_Name,' ') as areaName,
+        o.attachment_Id as attachmentId,
+        o.totalColor_Value as totalColorValue,
+        o.memo,
+        o.panorama,
+        o.inspectStartDate,
+        o.stop_Status stopStatus,
+        o.stop_Start_Date stopStartDate,
+        o.stop_End_Date stopEndDate,
+        o.stop_Memo stopMemo,
+        o.change_Station changeStation,
+        o.sort,
+        <![CDATA[case when (select count(id) from yj_bim_upload where orgId=o.id and type='Whole') >0 then 1 else 0 end "hasWhole",
+        case when (select count(id) from yj_bim_upload where orgId=o.id and type='BIM') >0 then 1 else 0 end "hasBIM",
+        case when (select count(id) from yj_bim_upload where orgId=o.id and type='Scene') >0 then 1 else 0 end "hasScene",
+        case when (select count(id) from yj_bim_upload where orgId=o.id and type='Conduit') >0 then 1 else 0 end "hasConduit",
+        case when (select count(id) from yj_bim_upload where orgId=o.id and type='Geology') >0 then 1 else 0 end "hasGeology"
+
+        ]]>
+    </sql>
+
+    <select id="selectSingleById" resultType="com.yanjoy.temp.entity.org.Organization"
+            parameterType="java.lang.String">
+        SELECT
+        <include refid="organization_column"/>
+        FROM
+        yj_ORGANIZATION o
+        WHERE
+        o.DELETE_FLAG = 0 AND o.ID = #{id}
+    </select>
+
+    <select id="selectPicByOrgId" parameterType="java.lang.String"
+            resultType="com.yanjoy.temp.entity.org.OrganizationPic">
+        select
+        id,name,type,attachment_id attachmentId,organization_id organizationId
+        from yj_organization_pic
+        where organization_id=#{id}
+    </select>
+
+    <select id="selectChildByParent" resultType="com.yanjoy.temp.entity.org.Organization"
+            parameterType="com.yanjoy.temp.entity.org.Organization">
+        SELECT
+        <include refid="organization_column"/>
+        FROM
+        yj_ORGANIZATION o
+        WHERE
+        o.DELETE_FLAG = 0 AND o.parent_id = #{id}
+        and type = #{type} + 1
+        order by o.sort
+    </select>
+
+    <select id="getRootOrgByProject" resultType="com.yanjoy.temp.entity.org.Organization">
+        select id,type,project_id projectId from yj_organization where project_id=#{projectId} and type=2
+    </select>
+
+    <select id="getProjects" resultType="java.util.Map">
+        select id "id",code "code",name "name" from yj_project
+        <if test="projectId != null ">
+            where  id = #{projectId}
+        </if>
+        order by code
+    </select>
+
+
+    <select id="getSimpleOrg" resultType="com.yanjoy.temp.entity.org.OrganizationSimple">
+        SELECT
+        yo. ID AS orgId,
+        yo. NAME AS orgName,
+        yo.parent_id AS parentId,
+        yo. TYPE AS orgType,
+        yo.secondcompany_name as company,
+        yo.project_id AS projectId,
+        yo. SORT
+        FROM
+        yj_organization yo
+        <if test="orgType != null">
+            WHERE
+            YO.TYPE = #{orgType}
+        </if>
+        START WITH ID = #{orgId} CONNECT BY PRIOR ID = parent_id
+        ORDER BY
+        yo.SORT
+    </select>
+    <select id="getTopOrg" resultType="com.yanjoy.temp.entity.org.OrgPo">
+        select id,name,type,sort  from yj_organization where type = 2 and project_id = #{projectId}
+    </select>
+    <select id="getTempOrg" resultType="com.yanjoy.temp.entity.org.TempOrgTree">
+        SELECT
+        yo. ID AS orgId,
+        yo. NAME AS orgName,
+        yo.parent_id AS parentId,
+        yo. TYPE AS orgType,
+        yo.secondcompany_name as company,
+        yo.project_id AS projectId,
+        yo. SORT
+        FROM
+        yj_organization yo
+        <if test="orgType != null">
+            WHERE
+            YO.TYPE = #{orgType}
+        </if>
+        START WITH ID = #{orgId} CONNECT BY PRIOR ID = parent_id
+        ORDER BY
+        yo.SORT
+    </select>
+</mapper>

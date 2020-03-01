@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanjoy.temp.dao.TempEntryMapper">
+    <resultMap id="BaseResultMap" type="com.yanjoy.temp.entity.entry.TempEntry">
+        <!--@mbg.generated-->
+        <!--@Table YJ_TEMP_ENTRY-->
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="ID_CARD" jdbcType="VARCHAR" property="idCard"/>
+        <result column="MESSAGE_ID" jdbcType="VARCHAR" property="messageId"/>
+        <result column="STATUS" jdbcType="DECIMAL" property="status"/>
+        <result column="NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="TYPE_CODE" jdbcType="VARCHAR" property="typeCode"/>
+        <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="CREATE_DAY" jdbcType="VARCHAR" property="createDay"/>
+        <result column="WHETHER_CHANGE" jdbcType="DECIMAL" property="whetherChange"/>
+        <result column="TEST_DATE" jdbcType="TIMESTAMP" property="testDate"/>
+        <result column="TEST_RESULT" jdbcType="DECIMAL" property="testResult"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        ID, ID_CARD, MESSAGE_ID, "STATUS", "NAME", TYPE_CODE, CREATE_DATE, CREATE_DAY,
+        WHETHER_CHANGE,TEST_DATE,TEST_RESULT
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from YJ_TEMP_ENTRY
+        where ID = #{id,jdbcType=VARCHAR}
+    </select>
+
+
+    <insert id="insertSelective" parameterType="com.yanjoy.temp.entity.entry.TempEntry">
+        <!--@mbg.generated-->
+        insert into YJ_TEMP_ENTRY
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="idCard != null">
+                ID_CARD,
+            </if>
+            <if test="messageId != null">
+                MESSAGE_ID,
+            </if>
+            <if test="status != null">
+                "STATUS",
+            </if>
+            <if test="name != null">
+                "NAME",
+            </if>
+            <if test="typeCode != null">
+                TYPE_CODE,
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE,
+            </if>
+            <if test="createDay != null">
+                CREATE_DAY,
+            </if>
+            <if test="whetherChange != null">
+                WHETHER_CHANGE,
+            </if>
+            <if test="testDate != null">
+                TEST_DATE,
+            </if>
+            <if test="testResult != null">
+                TEST_RESULT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="messageId != null">
+                #{messageId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="typeCode != null">
+                #{typeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDay != null">
+                #{createDay,jdbcType=VARCHAR},
+            </if>
+            <if test="whetherChange != null">
+                #{whetherChange,jdbcType=DECIMAL},
+            </if>
+            <if test="testDate != null">
+                #{testDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="testResult != null">
+                #{testResult,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yanjoy.temp.entity.entry.TempEntry">
+        <!--@mbg.generated-->
+        update YJ_TEMP_ENTRY
+        <set>
+            <if test="idCard != null">
+                ID_CARD = #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="messageId != null">
+                MESSAGE_ID = #{messageId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                "STATUS" = #{status,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                "NAME" = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="typeCode != null">
+                TYPE_CODE = #{typeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDay != null">
+                CREATE_DAY = #{createDay,jdbcType=VARCHAR},
+            </if>
+            <if test="whetherChange != null">
+                WHETHER_CHANGE = #{whetherChange,jdbcType=DECIMAL},
+            </if>
+
+            <if test="testDate != null">
+                TEST_DATE = #{testDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="testResult != null">
+                TEST_RESULT = #{testResult,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getLastEntryByIdCardAndType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from YJ_TEMP_ENTRY
+        where
+        ID_CARD = #{idCard}
+        and TYPE_CODE = #{typeCode}
+        and rownum <![CDATA[ < ]]> 2
+        order by CREATE_DATE desc
+    </select>
+</mapper>

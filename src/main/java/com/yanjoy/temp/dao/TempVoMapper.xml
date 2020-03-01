@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yanjoy.temp.dao.TempVoMapper">
+
+    <resultMap id="table_line_vo" type="com.yanjoy.temp.entity.excel.TableLineMessage">
+        <id column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="ytuIdCard" jdbcType="VARCHAR" property="idCard"/>
+
+
+        <association property="user" javaType="com.yanjoy.temp.entity.user.TempUser">
+            <id column="ytuId" jdbcType="VARCHAR" property="id"/>
+            <result column="ytuIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="ytuUserName" jdbcType="VARCHAR" property="userName"/>
+            <result column="ytuPhone" jdbcType="VARCHAR" property="phone"/>
+            <result column="ytuOrgId" jdbcType="VARCHAR" property="orgId"/>
+            <result column="ytuOrgName" jdbcType="VARCHAR" property="orgName"/>
+            <result column="ytuCompany" jdbcType="VARCHAR" property="company"/>
+            <result column="ytuProjectId" jdbcType="VARCHAR" property="projectId"/>
+            <result column="ytuStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="ytuPersonType" jdbcType="VARCHAR" property="personType"/>
+            <result column="ytuAge" jdbcType="DECIMAL" property="age"/>
+            <result column="ytuSex" jdbcType="VARCHAR" property="sex"/>
+            <result column="STAY_STATUS" jdbcType="DECIMAL" property="stayStatus"/>
+            <result column="COME_DATE" jdbcType="VARCHAR" property="comeDate"/>
+            <result column="FINISH_DATE" jdbcType="VARCHAR" property="finishDate"/>
+            <result column="COME_AREA" jdbcType="VARCHAR" property="comeArea"/>
+        </association>
+
+        <association property="message" javaType="com.yanjoy.temp.entity.message.TempMessage">
+            <id column="ID" jdbcType="VARCHAR" property="id"/>
+            <result column="ID_CARD" jdbcType="VARCHAR" property="idCard"/>
+            <result column="PROVINCE" jdbcType="VARCHAR" property="province"/>
+            <result column="ADDRESS" jdbcType="VARCHAR" property="address"/>
+            <result column="ROUTE" jdbcType="VARCHAR" property="route"/>
+            <result column="CONTACT_HISTORY" jdbcType="VARCHAR" property="contactHistory"/>
+            <result column="AREA_HISTORY" jdbcType="VARCHAR" property="areaHistory"/>
+            <result column="PERSON_HISTORY" jdbcType="VARCHAR" property="personHistory"/>
+            <result column="HEALTH" jdbcType="VARCHAR" property="health"/>
+            <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="CREATE_DAY" jdbcType="VARCHAR" property="createDay"/>
+            <result column="NOTE" jdbcType="VARCHAR" property="note"/>
+            <result column="BLOOD_TEST" jdbcType="VARCHAR" property="bloodTest"/>
+            <result column="NUCLEASE_TEST" jdbcType="VARCHAR" property="nucleaseTest"/>
+            <result column="WORK_STATUS" jdbcType="VARCHAR" property="workStatus"/>
+        </association>
+
+        <association property="route" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="routeId" jdbcType="VARCHAR" property="id"/>
+            <result column="routeIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="routeMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="routeStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="routeName" jdbcType="VARCHAR" property="name"/>
+            <result column="routeCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="routeCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="routeCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="routeChange" jdbcType="DECIMAL" property="whetherChange"/>
+        </association>
+
+        <association property="contactHistory" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="contId" jdbcType="VARCHAR" property="id"/>
+            <result column="contIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="contMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="contStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="contName" jdbcType="VARCHAR" property="name"/>
+            <result column="contCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="contCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="contCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="contChange" jdbcType="DECIMAL" property="whetherChange"/>
+        </association>
+
+        <association property="areaHistory" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="areaId" jdbcType="VARCHAR" property="id"/>
+            <result column="areaIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="areaMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="areaStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="areaName" jdbcType="VARCHAR" property="name"/>
+            <result column="areaCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="areaCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="areaCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="areaChange" jdbcType="DECIMAL" property="whetherChange"/>
+        </association>
+
+        <association property="personHistory" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="personId" jdbcType="VARCHAR" property="id"/>
+            <result column="personIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="personMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="personStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="personName" jdbcType="VARCHAR" property="name"/>
+            <result column="personCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="personCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="personCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="personChange" jdbcType="DECIMAL" property="whetherChange"/>
+        </association>
+
+        <association property="health" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="healthId" jdbcType="VARCHAR" property="id"/>
+            <result column="personIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="healthIdCard" jdbcType="VARCHAR" property="messageId"/>
+            <result column="healthStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="healthName" jdbcType="VARCHAR" property="name"/>
+            <result column="healthCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="healthCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="healthCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="healthChange" jdbcType="DECIMAL" property="whetherChange"/>
+        </association>
+<!--
+        <association property="bloodTest" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="bloodId" jdbcType="VARCHAR" property="id"/>
+            <result column="bloodIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="bloodMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="bloodStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="bloodName" jdbcType="VARCHAR" property="name"/>
+            <result column="bloodCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="bloodCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="bloodCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="bloodChange" jdbcType="DECIMAL" property="whetherChange"/>
+            <result column="bloodTestDay" jdbcType="TIMESTAMP" property="testDate"/>
+            <result column="bloodRestult" jdbcType="DECIMAL" property="testResult"/>
+        </association>
+
+        <association property="nucleaseTest" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="nucleaseId" jdbcType="VARCHAR" property="id"/>
+            <result column="nucleaseIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="nucleaseMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="nucleaseStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="nucleaseName" jdbcType="VARCHAR" property="name"/>
+            <result column="nucleaseCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="nucleaseCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="nucleaseCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="nucleaseChange" jdbcType="DECIMAL" property="whetherChange"/>
+            <result column="nucleaseTestDay" jdbcType="TIMESTAMP" property="testDate"/>
+            <result column="nucleaseRestult" jdbcType="DECIMAL" property="testResult"/>
+        </association>
+
+        <association property="workStatus" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="workSId" jdbcType="VARCHAR" property="id"/>
+            <result column="workSIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="workSMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="workSStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="workSName" jdbcType="VARCHAR" property="name"/>
+            <result column="workSCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="workSCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="workSCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="workSChange" jdbcType="DECIMAL" property="whetherChange"/>
+            <result column="workSTestDay" jdbcType="TIMESTAMP" property="testDate"/>
+            <result column="workSRestult" jdbcType="DECIMAL" property="testResult"/>
+        </association>-->
+
+        <collection property="temp" ofType="com.yanjoy.temp.entity.detail.TempDetail">
+            <id column="detailId" jdbcType="VARCHAR" property="id"/>
+            <result column="detailMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="detailCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="detailCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="detailTempType" jdbcType="DECIMAL" property="tempType"/>
+            <result column="detailTemp" jdbcType="DECIMAL" property="temperature"/>
+            <result column="detailIdCard" jdbcType="VARCHAR" property="idCard"/>
+        </collection>
+    </resultMap>
+
+    <sql id="table_line_result">
+
+        ytu.ID ytuId,
+        ytu.ID_CARD ytuIdCard,
+        ytu.USER_NAME ytuUserName,
+        ytu.PHONE ytuPhone,
+        ytu.ORG_ID ytuOrgId,
+        ytu.ORG_NAME ytuOrgName,
+        ytu.COMPANY ytuCompany,
+        ytu.PROJECT_ID ytuProjectId,
+        ytu."STATUS" ytuStatus,
+        ytu.PERSON_TYPE ytuPersonType,
+        ytu.AGE ytuAge,
+        ytu.SEX ytuSex,
+        ytu.STAY_STATUS,
+        ytu.COME_DATE,
+        ytu.FINISH_DATE,
+        ytu.COME_AREA,
+
+
+        ytm.ID,
+        ytm.ID_CARD,
+        ytm.PROVINCE,
+        ytm.ADDRESS,
+        ytm.ROUTE,
+        ytm.CONTACT_HISTORY,
+        ytm.AREA_HISTORY,
+        ytm.PERSON_HISTORY,
+        ytm.HEALTH,
+        ytm.CREATE_DATE,
+        ytm.CREATE_DAY,
+        ytm.NOTE,
+        ytm.DETAIL_ID,
+        ytm.BLOOD_TEST,
+        ytm.NUCLEASE_TEST,
+        ytm.WORK_STATUS,
+
+        ytd.ID detailId,
+        ytd.MESSAGE_ID detailMsgId,
+        ytd.CREATE_DATE detailCreateDate,
+        ytd.CREATE_DAY detailCreateDay,
+        ytd.TEMP_TYPE detailTempType,
+        ytd.TEMPERATURE detailTemp,
+        ytd.ID_CARD detailIdCard,
+
+        route.ID routeId,
+        route.ID_CARD routeIdCard,
+        route.MESSAGE_ID routeMsgId,
+        route."STATUS" routeStatus,
+        route."NAME" routeName,
+        route.TYPE_CODE routeCode,
+        route.CREATE_DATE routeCreateDate,
+        route.CREATE_DAY routeCreateDay,
+        route.WHETHER_CHANGE routeChange,
+
+        cont.ID contId,
+        cont.ID_CARD contIdCard,
+        cont.MESSAGE_ID contMsgId,
+        cont."STATUS" contStatus,
+        cont."NAME" contName,
+        cont.TYPE_CODE contCode,
+        cont.CREATE_DATE contCreateDate,
+        cont.CREATE_DAY contCreateDay,
+        cont.WHETHER_CHANGE contChange,
+
+        area.ID areaId,
+        area.ID_CARD areaIdCard,
+        area.MESSAGE_ID areaMsgId,
+        area."STATUS" areaStatus,
+        area."NAME" areaName,
+        area.TYPE_CODE areaCode,
+        area.CREATE_DATE areaCreateDate,
+        area.CREATE_DAY areaCreateDay,
+        area.WHETHER_CHANGE areaChange,
+
+        person.ID personId,
+        person.ID_CARD personIdCard,
+        person.MESSAGE_ID personMsgId,
+        person."STATUS" personStatus,
+        person."NAME" personName,
+        person.TYPE_CODE personCode,
+        person.CREATE_DATE personCreateDate,
+        person.CREATE_DAY personCreateDay,
+        person.WHETHER_CHANGE personChange,
+
+
+        health.ID healthId,
+        health.ID_CARD healthIdCard,
+        health.MESSAGE_ID healthMsgId,
+        health."STATUS" healthStatus,
+        health."NAME" healthName,
+        health.TYPE_CODE healthCode,
+        health.CREATE_DATE healthCreateDate,
+        health.CREATE_DAY healthCreateDay,
+        health.WHETHER_CHANGE healthChange,
+
+        blood.ID bloodId,
+        blood.ID_CARD bloodIdCard,
+        blood.MESSAGE_ID bloodMsgId,
+        blood."STATUS" bloodStatus,
+        blood."NAME" bloodName,
+        blood.TYPE_CODE bloodCode,
+        blood.CREATE_DATE bloodCreateDate,
+        blood.CREATE_DAY bloodCreateDay,
+        blood.WHETHER_CHANGE bloodChange,
+        blood.TEST_DATE bloodTestDate,
+        blood.TEST_RESULT bloodRestult,
+
+        nuclease.ID nucleaseId,
+        nuclease.ID_CARD nucleaseIdCard,
+        nuclease.MESSAGE_ID nucleaseMsgId,
+        nuclease."STATUS" nucleaseStatus,
+        nuclease."NAME" nucleaseName,
+        nuclease.TYPE_CODE nucleaseCode,
+        nuclease.CREATE_DATE nucleaseCreateDate,
+        nuclease.CREATE_DAY nucleaseCreateDay,
+        nuclease.WHETHER_CHANGE nucleaseChange,
+        nuclease.TEST_DATE nucleaseTestDate,
+        nuclease.TEST_RESULT nucleaseRestult,
+
+        workS.ID workSId,
+        workS.ID_CARD workSIdCard,
+        workS.MESSAGE_ID workSMsgId,
+        workS."STATUS" workSStatus,
+        workS."NAME" workSName,
+        workS.TYPE_CODE workSCode,
+        workS.CREATE_DATE workSCreateDate,
+        workS.CREATE_DAY workSCreateDay,
+        workS.WHETHER_CHANGE workSChange,
+        workS.TEST_DATE workSTestDate,
+        workS.TEST_RESULT workSRestult
+
+
+    </sql>
+
+    <select id="getTableLineMessage" resultMap="table_line_vo">
+        select
+        <include refid="table_line_result"/>
+        from
+        (select * from yj_temp_user where status = 0
+        <if test="orgId != null">
+            and org_id = #{orgId}
+        </if>
+        ) ytu
+        -- 这里要注意可能有不填报的。。
+        left join (
+        select e.*
+        from (select
+        ID, ID_CARD, PROVINCE, ADDRESS, ROUTE, CONTACT_HISTORY, AREA_HISTORY, PERSON_HISTORY,
+        HEALTH, CREATE_DATE, CREATE_DAY,NOTE,DETAIL_ID ,BLOOD_TEST,NUCLEASE_TEST,WORK_STATUS,
+        dense_rank() over(partition by ID_CARD,CREATE_DAY order by CREATE_DATE desc) rank
+        from YJ_TEMP_MESSAGE ) e
+        where e.rank = 1
+        <if test="id != null">
+            and ytm.ID =#{id}
+        </if>
+
+        <if test="dateDay != null">
+            and CREATE_DAY = #{dateDay}
+        </if>
+
+        <if test="startTime != null ">
+            and CREATE_DATE >= #{startTime}
+        </if>
+
+        <if test="endTime != null">
+            and CREATE_DATE  <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        )ytm on ytm.id_card = ytu.id_card
+        left join yj_temp_detail ytd on ytd.ID_CARD = ytm.ID_CARD and ytm.CREATE_DAY = ytd.CREATE_DAY
+        left join YJ_TEMP_ENTRY route on route.id = ytm.ROUTE
+        left join YJ_TEMP_ENTRY cont on cont.id = ytm.CONTACT_HISTORY
+        left join YJ_TEMP_ENTRY area on area.id = ytm.AREA_HISTORY
+        left join YJ_TEMP_ENTRY person on person.id = ytm.PERSON_HISTORY
+        left join YJ_TEMP_ENTRY health on health.id = ytm.HEALTH
+        left join YJ_TEMP_ENTRY blood on blood.id = ytm.BLOOD_TEST
+        left join YJ_TEMP_ENTRY nuclease on nuclease.id = ytm.NUCLEASE_TEST
+        left join YJ_TEMP_ENTRY workS on workS.id = ytm.WORK_STATUS
+        <where>
+            <if test="projectId != null">
+                ytu.PROJECT_ID = #{projectId}
+            </if>
+            <if test="idCard != null">
+                and ytu.ID_CARD = #{idCard}
+            </if>
+
+            <if test="personType != null ">
+                and ytu.PERSON_TYPE = #{personType}
+            </if>
+        </where>
+        order by ytm.CREATE_DATE desc
+    </select>
+
+
+</mapper>
