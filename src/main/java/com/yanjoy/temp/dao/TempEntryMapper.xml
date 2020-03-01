@@ -132,13 +132,8 @@
             <if test="whetherChange != null">
                 WHETHER_CHANGE = #{whetherChange,jdbcType=DECIMAL},
             </if>
-
-            <if test="testDate != null">
                 TEST_DATE = #{testDate,jdbcType=TIMESTAMP},
-            </if>
-            <if test="testResult != null">
                 TEST_RESULT = #{testResult,jdbcType=DECIMAL},
-            </if>
         </set>
         where ID = #{id,jdbcType=VARCHAR}
     </update>
