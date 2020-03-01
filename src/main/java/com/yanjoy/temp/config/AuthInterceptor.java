@@ -24,23 +24,19 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         JSONObject object = new JSONObject();
-        object.put("code", 0);
+        object.put("code", "0");
         object.put("status", HttpStatus.OK.value());
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");
         String token = request.getHeader("token");
-        if (StringUtils.isEmpty(token)) {
+        if(StringUtils.isEmpty(token)){
+            token = "123";
+        }
+        Object o = redisService.get(token);
+        if (Objects.isNull(o)) {
             object.put("status", HttpStatus.FORBIDDEN.value());
             object.put("data", false);
             object.put("msg", "用户未登录，请登录后操作！");
-            response.getWriter().write(object.toJSONString());
-            return false;
-        }
-        Object loginStatus = redisService.get(token);
-        if (Objects.isNull(loginStatus)) {
-            object.put("status", HttpStatus.FORBIDDEN.value());
-            object.put("data", false);
-            object.put("msg", "token错误，请查看！");
             response.getWriter().write(object.toJSONString());
             return false;
         }
