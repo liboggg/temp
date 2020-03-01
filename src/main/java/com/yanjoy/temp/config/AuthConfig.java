@@ -14,21 +14,21 @@ public class AuthConfig implements WebMvcConfigurer {
     }
 
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(initAuthInterceptor())
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("")
-//                .excludePathPatterns("/")
-//                .excludePathPatterns("/**/login/**")
-//                .excludePathPatterns("/**/pass/**")
-//                .excludePathPatterns("/**/excel/**")
-//                .excludePathPatterns("/**/org/**");
-//    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(initAuthInterceptor())
-                .excludePathPatterns("/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns("")
+                .excludePathPatterns("/")
+                .excludePathPatterns("/**/login/**")
+                .excludePathPatterns("/**/pass/**")
+                .excludePathPatterns("/**/excel/**")
+                .excludePathPatterns("/**/org/**");
     }
+
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(initAuthInterceptor())
+//                .excludePathPatterns("/**");
+//    }
 }
