@@ -1809,7 +1809,7 @@ public class ExcelController {
 
                     Cell atRowCell1 = hssfRow2.createCell(10);
                     if (tempOrgTree.getLineMessages().get(0).getNucleaseTest() != null&&tempOrgTree.getLineMessages().get(0).getNucleaseTest().getTestDate()!=null){
-                        sheetAtRowCell.setCellValue(changeDate(tempOrgTree.getLineMessages().get(0).getNucleaseTest().getTestDate()));
+                        atRowCell1.setCellValue(changeDate(tempOrgTree.getLineMessages().get(0).getNucleaseTest().getTestDate()));
                     }
                     atRowCell1.setCellStyle(weiRuan10);
                     PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 10, 10);
@@ -2377,7 +2377,7 @@ public class ExcelController {
 
                                 Cell atRowCell1 = row11.createCell(10);
                                 if (!tree.getLineMessages().isEmpty()&&tree.getLineMessages().get(0).getNucleaseTest().getTestDate()!=null) {
-                                    sheetAtRowCell.setCellValue(changeDate(tree.getLineMessages().get(0).getNucleaseTest().getTestDate()));
+                                    atRowCell1.setCellValue(changeDate(tree.getLineMessages().get(0).getNucleaseTest().getTestDate()));
                                 }
                                 atRowCell1.setCellStyle(weiRuan10);
                                 PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 10, 10);
