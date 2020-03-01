@@ -114,7 +114,7 @@
             <result column="bloodCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
             <result column="bloodCreateDay" jdbcType="VARCHAR" property="createDay"/>
             <result column="bloodChange" jdbcType="DECIMAL" property="whetherChange"/>
-            <result column="bloodTestDay" jdbcType="TIMESTAMP" property="testDate"/>
+            <result column="bloodTestDate" jdbcType="TIMESTAMP" property="testDate"/>
             <result column="bloodRestult" jdbcType="DECIMAL" property="testResult"/>
         </association>
 
@@ -128,7 +128,7 @@
             <result column="nucleaseCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
             <result column="nucleaseCreateDay" jdbcType="VARCHAR" property="createDay"/>
             <result column="nucleaseChange" jdbcType="DECIMAL" property="whetherChange"/>
-            <result column="nucleaseTestDay" jdbcType="TIMESTAMP" property="testDate"/>
+            <result column="nucleaseTestDate" jdbcType="TIMESTAMP" property="testDate"/>
             <result column="nucleaseRestult" jdbcType="DECIMAL" property="testResult"/>
         </association>
 
@@ -142,8 +142,6 @@
             <result column="workSCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
             <result column="workSCreateDay" jdbcType="VARCHAR" property="createDay"/>
             <result column="workSChange" jdbcType="DECIMAL" property="whetherChange"/>
-            <result column="workSTestDay" jdbcType="TIMESTAMP" property="testDate"/>
-            <result column="workSRestult" jdbcType="DECIMAL" property="testResult"/>
         </association>
 
         <collection property="temp" ofType="com.yanjoy.temp.entity.detail.TempDetail">
@@ -285,9 +283,7 @@
         workS.TYPE_CODE workSCode,
         workS.CREATE_DATE workSCreateDate,
         workS.CREATE_DAY workSCreateDay,
-        workS.WHETHER_CHANGE workSChange,
-        workS.TEST_DATE workSTestDate,
-        workS.TEST_RESULT workSRestult
+        workS.WHETHER_CHANGE workSChange
 
 
     </sql>
