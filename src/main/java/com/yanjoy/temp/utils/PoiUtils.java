@@ -208,6 +208,19 @@ public class PoiUtils {
         bigFontStyle.setFont(font);
         bigFontStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//水平居中
         bigFontStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);//垂直居中
+        bigFontStyle.setWrapText(true);//自动换行
+        return bigFontStyle;
+    }
+
+    public static HSSFCellStyle getSongTiLeft(HSSFWorkbook workbook){
+        HSSFCellStyle bigFontStyle = workbook.createCellStyle();
+        HSSFFont font = workbook.createFont();
+        font.setFontName("宋体");
+        font.setFontHeightInPoints((short) 12);//设置字体大小
+        bigFontStyle.setFont(font);
+        //bigFontStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//水平居中
+        bigFontStyle.setVerticalAlignment(HSSFCellStyle.ALIGN_LEFT);//靠左
+        bigFontStyle.setWrapText(true);//自动换行
         return bigFontStyle;
     }
 
@@ -228,7 +241,9 @@ public class PoiUtils {
 
         CellStyle style = workbook.createCellStyle();
         style = workbook.createCellStyle();
-        style.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        HSSFPalette customPalette = workbook.getCustomPalette();
+        customPalette.setColorAtIndex(HSSFColor.GREY_25_PERCENT.index, (byte) 217, (byte) 217, (byte) 217);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         HSSFFont font = workbook.createFont();
         font.setFontName("微软雅黑");
@@ -255,7 +270,7 @@ public class PoiUtils {
                                   Integer fromCellNum,
                                   String toSheetAddress,
                                   String fromName
-                           ){
+    ){
         /* 连接跳转*/
         HSSFCell linkCell = row.createCell(fromCellNum);
         HSSFHyperlink hssfHyperlink = new HSSFHyperlink(Hyperlink.LINK_DOCUMENT);
