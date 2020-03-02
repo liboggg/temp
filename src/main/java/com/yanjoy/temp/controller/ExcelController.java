@@ -57,8 +57,8 @@ public class ExcelController {
         String person = "在穗人员(" + sumTable.getNowInArea() + "人)";
         String[] strings = {"日期", sumTable.getDateDay(), person};
         String[] detail = {"单位", "管理人员(" + sumTable.getManagerStatistics().getNowInArea() + "人)", "劳务人员(" + sumTable.getLabourStatistics().getNowInArea() + "人)"};
-        String[] four = {"处于14天隔离期", "已完成14天隔离", "休假期间一直在穗", "体温异常", "未填报", "处于14天隔离期", "已完成14天隔离", "休假期间一直在穗", "体温异常", "未填报"};
-      //  FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\ycl\\Desktop\\新建文件夹 (4)\\" + System.currentTimeMillis() + ".xls");
+        String[] four = {"处于14天隔离期", "已完成14天隔离", "休假期间一直在穗", "体温异常", "未填报","血液检测","核酸检测", "处于14天隔离期", "已完成14天隔离", "休假期间一直在穗", "体温异常", "未填报","血液检测","核酸检测"};
+       // FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\ycl\\Desktop\\新建文件夹 (4)\\" + System.currentTimeMillis() + ".xls");
 
 
         //起始行
@@ -1156,7 +1156,6 @@ public class ExcelController {
 
 
         }
-
 
 //        work.write(fileOutputStream);
 //        fileOutputStream.close();
