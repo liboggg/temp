@@ -149,9 +149,10 @@ public class TableLineMessage implements Serializable {
 
     public int getDetailAlarm() {
         if (!temp.isEmpty()) {
-            return (int) temp.stream()
+            int i = (int) temp.stream()
                     .filter(this::detailsAlarm)
                     .count();
+            return i > 0 ? 1 : 0;
         }
         return detailAlarm;
     }

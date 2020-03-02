@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -259,10 +260,18 @@ public class TempExcelServiceImpl implements TempExcelService {
         return lineMessages.stream()
                 .sorted(Comparator.comparing(TableLineMessage::getNucleaseAlarm, Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getBloodAlarm, Comparator.reverseOrder())
-                        .thenComparing(TableLineMessage::getDetailAlarm, Comparator.reverseOrder())
+                        .thenComparing(TableLineMessage::getDetailAlarm,Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getMsgNoReport, Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getMsgTotalAlarm, Comparator.reverseOrder())
+                        .thenComparing(a -> maxTemp(a.getTemp()),Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getIdCard)).collect(Collectors.toList());
+    }
+
+    double maxTemp(List<TempDetail> details) {
+        if (details.isEmpty()) {
+            return 0;
+        }
+        return details.stream().max(Comparator.comparing(TempDetail::getTemperature)).get().getTemperature().doubleValue();
     }
 
 
