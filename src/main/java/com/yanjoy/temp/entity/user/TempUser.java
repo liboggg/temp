@@ -101,31 +101,4 @@ public class TempUser implements Serializable {
      * 次数
      */
     private Integer amount;
-
-    /**
-     * 1 处于14天隔离期
-     * 2 已完成14天隔离
-     * 3 休假期间一直在穗
-     */
-    public Short getStayStatus() {
-        //来穗日期
-        Date date = TempTimeUtils.ymdToDate(comeDate);
-        //延后14天
-        Date finishDate = TempTimeUtils.getAfterTimeDate(date, 14);
-        //实际值yyyy-mm-dd要减一天
-        this.finishDate = TempTimeUtils.getAfterTimeYMD(date, 13);
-        Date now = new Date();
-        if (stayStatus == 3 || stayStatus == 2) {
-            return stayStatus;
-            //隔离中
-        } else if (stayStatus == 1) {
-            //还在隔离期
-            if (finishDate.before(now)) {
-                this.stayStatus = 1;
-            } else {
-                this.stayStatus = 2;
-            }
-        }
-        return stayStatus;
-    }
 }

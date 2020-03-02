@@ -106,7 +106,7 @@ public class TempMonitorServiceImpl implements TempMonitorService {
 
         detail.setTempType((short) stage);
 
-        //现在其中可能有空
+        //最后条目  其中可能有空
         TempEntry lastRoute = entryMapper.getLastEntryByIdCardAndType(idCard, route.getTypeCode());
         TempEntry lastContact = entryMapper.getLastEntryByIdCardAndType(idCard, contactHistory.getTypeCode());
         TempEntry lastArea = entryMapper.getLastEntryByIdCardAndType(idCard, areaHistory.getTypeCode());

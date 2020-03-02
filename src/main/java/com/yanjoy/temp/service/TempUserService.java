@@ -28,6 +28,12 @@ public interface TempUserService {
     TempUser getUser(String idCardOrPhone);
 
     /**
+     * 判断当前状态
+     */
+    TempUser pullStatus(TempUser user);
+
+
+    /**
      *人员暂离
      * @param idCard 身份证
      */

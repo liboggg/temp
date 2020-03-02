@@ -6,10 +6,13 @@ import com.yanjoy.temp.entity.base.TempParam;
 import com.yanjoy.temp.entity.user.TempUser;
 import com.yanjoy.temp.entity.user.UserInfo;
 import com.yanjoy.temp.utils.IDNext;
+import com.yanjoy.temp.utils.TempTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 
 @Service("tempUserService")
@@ -81,6 +84,7 @@ public class TempUserServiceImpl implements TempUserService {
     @Override
     public TempUser getUser(String idCardOrPhone) {
         TempUser tempUser = mapper.selectByIdCard(idCardOrPhone);
+        tempUser = pullStatus(tempUser);
         if (tempUser != null) {
             TempParam param = new TempParam();
             param.setIdCard(tempUser.getIdCard());
@@ -88,6 +92,38 @@ public class TempUserServiceImpl implements TempUserService {
         }
         return tempUser;
     }
+
+    /**
+     * 1 处于14天隔离期
+     * 2 已完成14天隔离
+     * 3 休假期间一直在穗
+     */
+    @Override
+    public TempUser pullStatus(TempUser user) {
+        if (user == null) {
+            return user;
+        }
+        //来穗日期
+        Date date = TempTimeUtils.ymdToDate(user.getComeDate());
+        //延后14天
+        Date finishDate = TempTimeUtils.getAfterTimeDate(date, 14);
+        //实际值yyyy-mm-dd要减一天
+        user.setFinishDate(TempTimeUtils.getAfterTimeYMD(date, 13));
+        Date now = new Date();
+        if (user.getStayStatus() == 3 || user.getStayStatus() == 2) {
+            return user;
+            //隔离中
+        } else if (user.getStayStatus() == 1) {
+            //还在隔离期
+            if (finishDate.after(now)) {
+                user.setStayStatus((short) 1);
+            } else {
+                user.setStayStatus((short) 2);
+            }
+        }
+        return user;
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
