@@ -38,6 +38,9 @@ public class TempExcelServiceImpl implements TempExcelService {
     @Autowired
     private OrgService orgService;
 
+    @Autowired
+    private TempUserService userService;
+
     @Override
     public List<TempOrgTree> getTempOrgTree(String projectId) {
         if (StringUtils.isEmpty(projectId)) {
@@ -53,7 +56,9 @@ public class TempExcelServiceImpl implements TempExcelService {
         if (StringUtils.isEmpty(param.getProjectId()) || StringUtils.isEmpty(param.getDateDay())) {
             throw new IllegalArgumentException("the projectId,dateDay is not allowed be null");
         }
-        return pullMsgAndSort(voMapper.getTableLineMessage(param));
+        return pullMsgAndSort(voMapper.getTableLineMessage(param).stream().peek(a ->
+                a.setUser(userService.pullStatus(a.getUser()))
+        ).collect(Collectors.toList()));
     }
 
     @Override
@@ -252,7 +257,7 @@ public class TempExcelServiceImpl implements TempExcelService {
      */
     private List<TableLineMessage> baseSort(List<TableLineMessage> lineMessages) {
         return lineMessages.stream()
-                .sorted(Comparator.comparing(TableLineMessage::getNucleaseAlarm,Comparator.reverseOrder())
+                .sorted(Comparator.comparing(TableLineMessage::getNucleaseAlarm, Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getBloodAlarm, Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getDetailAlarm, Comparator.reverseOrder())
                         .thenComparing(TableLineMessage::getMsgNoReport, Comparator.reverseOrder())

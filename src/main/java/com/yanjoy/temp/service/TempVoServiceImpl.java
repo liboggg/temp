@@ -34,6 +34,9 @@ public class TempVoServiceImpl implements TempVoService {
     private TempUserMapper userMapper;
 
     @Autowired
+    private TempUserService userService;
+
+    @Autowired
     private OrgService orgService;
 
     @Override
@@ -47,7 +50,8 @@ public class TempVoServiceImpl implements TempVoService {
     }
 
     private List<AppTempVo> fillAppVoList(TempParam param) {
-        final TempUser tempUser = userMapper.selectByIdCard(param.getIdCard());
+        final TempUser tempUser = userService.pullStatus(userMapper.selectByIdCard(param.getIdCard()));
+
         final String name = orgService.getProjects(param.getProjectId()).get(0).get("name").toString();
         return messageMapper.getList(param)
                 .stream().map(a -> {
