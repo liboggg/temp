@@ -117,6 +117,7 @@ public class TempUserServiceImpl implements TempUserService {
             //还在隔离期
             if (finishDate.after(now)) {
                 user.setStayStatus((short) 1);
+             //隔离结束时间 < 当前时间 已过隔离期
             } else {
                 user.setStayStatus((short) 2);
             }
