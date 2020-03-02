@@ -8,10 +8,7 @@ import com.yanjoy.temp.entity.org.TempOrgTree;
 import com.yanjoy.temp.service.TempExcelService;
 import com.yanjoy.temp.utils.PoiUtils;
 import lombok.Data;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +55,7 @@ public class ExcelController {
         String[] strings = {"日期", sumTable.getDateDay(), person};
         String[] detail = {"单位", "管理人员(" + sumTable.getManagerStatistics().getNowInArea() + "人)", "劳务人员(" + sumTable.getLabourStatistics().getNowInArea() + "人)"};
         String[] four = {"处于14天隔离期", "已完成14天隔离", "休假期间一直在穗", "体温异常", "未填报","血液检测","核酸检测", "处于14天隔离期", "已完成14天隔离", "休假期间一直在穗", "体温异常", "未填报","血液检测","核酸检测"};
-       // FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\ycl\\Desktop\\新建文件夹 (4)\\" + System.currentTimeMillis() + ".xls");
+        //FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\ycl\\Desktop\\新建文件夹 (4)\\" + System.currentTimeMillis() + ".xls");
 
 
         //起始行
@@ -850,308 +847,597 @@ public class ExcelController {
 
             if (!tempExcelVo.getUnNormalChild().getList().isEmpty()) {
                 for (TempOrgTree orgTree : tempExcelVo.getUnNormalChild().getList()) {
-                        Row row = sheetAt.createRow(lobourIndex);
-                        Cell cell = row.createCell(0);
-                        cell.setCellValue(no);
-                        cell.setCellStyle(weiRuan10);
-                        PoiUtils.mergeCell(sheetAt, lobourIndex, lobourIndex + orgTree.getNextChild().size() - 1, 0, 0);
-                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex + orgTree.getNextChild().size() - 1, 0, 0);
+                    int rrr=0;
+                    int qqq=0;
+                    for (TempOrgTree tempOrgTree : orgTree.getNextChild()) {
+                        rrr += tempOrgTree.getLineMessages().size();
+                        if (tempOrgTree.getLineMessages().size()>1) {
+                            for (int o = 1; o < tempOrgTree.getLineMessages().size(); o++) {
+                                qqq++;
+                            }
+                        }
 
-                        //分部
+                    }
+                    if (rrr == 0) {
+                        rrr += orgTree.getNextChild().size();
+                    }
+                    HSSFRow row = sheetAt.createRow(lobourIndex);
+                    HSSFCell cell = row.createCell(0);
+                    cell.setCellValue(no);
+                    cell.setCellStyle(weiRuan10);
+
+                    HSSFCell cell1 = row.createCell(1);
+                    cell1.setCellValue(orgTree.getOrgName());
+                    cell1.setCellStyle(weiRuan10);
 
                     if (no == 1) {
-                        Cell cell1 = row.createCell(1);
-                        cell1.setCellValue(orgTree.getOrgName());
-                        sheetAt.setColumnWidth(1,7*256);
-                        PoiUtils.mergeCell(sheetAt,  lobourIndex, lobourIndex, 1, 2);
-                        cell1.setCellStyle(weiRuan10);
-                        PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 1, 2);
+                        PoiUtils.mergeCell(sheetAt,lobourIndex,lobourIndex+rrr-1,0,0);
+                        PoiUtils.mergeForm(sheetAt,work,lobourIndex,lobourIndex+rrr-1,0,0);
+                        PoiUtils.mergeCell(sheetAt,lobourIndex,lobourIndex+rrr-1,1,2);
+                        PoiUtils.mergeForm(sheetAt,work,lobourIndex,lobourIndex+rrr-1,1,2);
                     }else {
-                        Cell cell1 = row.createCell(1);
-                        cell1.setCellValue(orgTree.getOrgName());
+                        PoiUtils.mergeCell(sheetAt,lobourIndex,lobourIndex+orgTree.getNextChild().size()-1+qqq,0,0);
+                        PoiUtils.mergeForm(sheetAt,work,lobourIndex,lobourIndex+orgTree.getNextChild().size()-1+qqq,0,0);
+                        PoiUtils.mergeCell(sheetAt,lobourIndex,lobourIndex+orgTree.getNextChild().size()-1+qqq,1,1);
+                        PoiUtils.mergeForm(sheetAt,work,lobourIndex,lobourIndex+orgTree.getNextChild().size()-1+qqq,1,1);
                         cell1.setCellStyle(weiRuan10);
-                        sheetAt.setColumnWidth(1,7*256);
-                        PoiUtils.mergeCell(sheetAt, lobourIndex, lobourIndex + orgTree.getNextChild().size() - 1, 1, 1);
-                        PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex + orgTree.getNextChild().size() - 1, 1, 1);
                     }
 
-                        //工区
-                        for (TempOrgTree tree : orgTree.getNextChild()) {
-                            HSSFRow row10 = sheetAt.getRow(lobourIndex);
-                            sheetAt.setColumnWidth(2,12*256);
-                            Row sheetRow=null;
-                            if (row10 == null) {
-                                sheetRow= sheet.createRow(startRowIndex);
-                            }else {
-                                sheetRow=row10;
-                            }
-                            sheetAt.setColumnWidth(2,13*256);
-                            Cell cell2 = sheetRow.createCell(2);
+                    for (TempOrgTree tree : orgTree.getNextChild()) {
+                        HSSFRow atRow1 = sheetAt.getRow(lobourIndex);
+                        if (atRow1 == null) {
+                            atRow1 = sheetAt.createRow(lobourIndex);
+                        }
+                        if (no != 1) {
+                            HSSFCell cell2 = atRow1.createCell(2);
                             cell2.setCellValue(tree.getOrgName());
                             cell2.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 2, 2);
-
-                            Cell cell3 = sheetRow.createCell(3);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getUser().getPersonType().equals("gl")) {
-                                    cell3.setCellValue("管理人员");
-                                } else {
-                                    cell3.setCellValue("劳务人员");
-                                }
-                            }
-                            cell3.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 3, 3);
-
-
-                            Cell cell4 = sheetRow.createCell(4);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                cell4.setCellValue(tree.getLineMessages().get(0).getUser().getUserName());
-                            }
-                            cell4.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 4, 4);
-
-                            Cell rowCell5 = sheetRow.createCell(5);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getDetailAlarm() != 0) {
-                                    rowCell5.setCellValue("异常");
-                                    PoiUtils.setBackColor(work, rowCell5);
-                                } else {
-                                    rowCell5.setCellValue("正常");
-                                    rowCell5.setCellStyle(weiRuan10);
-                                }
-                            }
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 5, 5);
-
-                            Cell rowCell6 = sheetRow.createCell(6);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getMsgTotalAlarm() != 0) {
-                                    rowCell6.setCellValue("有");
-                                    PoiUtils.setBackColor(work, rowCell6);
-                                } else {
-                                    rowCell6.setCellValue("无");
-                                    rowCell6.setCellStyle(weiRuan10);
-                                }
-                            }
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 6, 6);
-
-                            //异常血液检测、核酸检测
-                            Cell sheetAtRowCell = sheetRow.createCell(7);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getBloodTest().getStatus() == 0) {
-                                    sheetAtRowCell.setCellValue("否");
-                                    sheetAtRowCell.setCellStyle(weiRuan10);
-                                }else {
-                                    sheetAtRowCell.setCellValue(tree.getLineMessages().get(0).getBloodTest().getName());
-                                    sheetAtRowCell.setCellStyle(weiRuan10);
-                                    if (tree.getLineMessages().get(0).getBloodTest().getTestResult() == (short) 1) {
-                                        sheetAtRowCell.setCellStyle(red10);
-                                        PoiUtils.setBackColor(work,sheetAtRowCell);
-                                    }
-                                }
-                            }
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 7, 7);
-
-                            Cell rowCell4 = sheetRow.createCell(8);
-                            if (!tree.getLineMessages().isEmpty()&&tree.getLineMessages().get(0).getBloodTest().getTestDate()!=null) {
-                                rowCell4.setCellValue(changeDate(tree.getLineMessages().get(0).getBloodTest().getTestDate()));
-                            }
-                            rowCell4.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 8, 8);
-
-                            Cell atRowCell = sheetRow.createCell(9);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getNucleaseTest().getStatus() == 0) {
-                                    atRowCell.setCellValue("否");
-                                    atRowCell.setCellStyle(weiRuan10);
-                                }else {
-                                    atRowCell.setCellValue(tree.getLineMessages().get(0).getNucleaseTest().getName());
-                                    atRowCell.setCellStyle(weiRuan10);
-                                    if (tree.getLineMessages().get(0).getNucleaseTest().getTestResult() == (short) 1) {
-                                        atRowCell.setCellStyle(red10);
-                                        PoiUtils.setBackColor(work,atRowCell);
-                                    }
-                                }
-                            }
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 9, 9);
-
-                            Cell atRowCell1 = sheetRow.createCell(10);
-                            if (!tree.getLineMessages().isEmpty()&&tree.getLineMessages().get(0).getNucleaseTest().getTestDate()!=null) {
-                                atRowCell1.setCellValue(changeDate(tree.getLineMessages().get(0).getNucleaseTest().getTestDate()));
-                            }
-                            atRowCell1.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 10, 10);
-
-                            Cell rowCell14 = sheetRow.createCell(11);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                rowCell14.setCellValue(tree.getLineMessages().get(0).getWorkStatus().getName());
-                            }
-                            rowCell14.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 11, 11);
-
-                            Cell rowCell7 = sheetRow.createCell(12);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                rowCell7.setCellValue(tree.getLineMessages().get(0).getUser().getAge());
-                            }
-                            rowCell7.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 12, 12);
-
-                            Cell rowCell8 = sheetRow.createCell(13);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                rowCell8.setCellValue(tree.getLineMessages().get(0).getUser().getPhone());
-                            }
-                            rowCell8.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 13, 13);
-
-                            Cell rowCell9 = sheetRow.createCell(14);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getUser().getIdCard().length() == 18) {
-                                    String substring1 = tree.getLineMessages().get(0).getUser().getIdCard().substring(0, 10);
-                                    rowCell9.setCellValue(substring1+"********");
-                                }else {
-                                    rowCell9.setCellValue(tree.getLineMessages().get(0).getUser().getIdCard());
-                                }
-                            }
-                            rowCell9.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 14, 14);
-
-
-                            if (!tree.getLineMessages().isEmpty()) {
-                                for (TempDetail tempDetail : tree.getLineMessages().get(0).getTemp()) {
-                                    if (tempDetail.getTempType().equals((short) 1)) {
-                                        Cell cell11 = sheetRow.createCell(15);
-                                        cell11.setCellValue(tempDetail.getTemperature().doubleValue());
-                                        cell11.setCellStyle(weiRuan10);
-                                        if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
-                                            PoiUtils.setBackColor(work,cell11);
-                                        }
-                                    } else if (tempDetail.getTempType().equals((short) 2)) {
-                                        Cell cell11 = sheetRow.createCell(16);
-                                        cell11.setCellValue(tempDetail.getTemperature().doubleValue());
-                                        cell11.setCellStyle(weiRuan10);
-                                        if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
-                                            PoiUtils.setBackColor(work,cell11);
-                                        }
-                                    } else if (tempDetail.getTempType().equals((short) 3)) {
-                                        Cell cell11 = sheetRow.createCell(17);
-                                        cell11.setCellValue(tempDetail.getTemperature().doubleValue());
-                                        cell11.setCellStyle(weiRuan10);
-                                        if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
-                                            PoiUtils.setBackColor(work,cell11);
-                                        }
-                                    }
-                                }
-                            }
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 15, 15);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 16, 16);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 17, 17);
-
-                            Cell rowCell10 = sheetRow.createCell(18);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                if (tree.getLineMessages().get(0).getUser().getStayStatus().equals((short) 1)) {
-                                    rowCell10.setCellValue("处于14天隔离期");
-                                } else if (tree.getLineMessages().get(0).getUser().getStayStatus().equals((short) 2)) {
-                                    rowCell10.setCellValue("已完成14天隔离");
-                                } else if (tree.getLineMessages().get(0).getUser().getStayStatus().equals((short) 3)) {
-                                    rowCell10.setCellValue("休假期间一直在穗");
-                                }
-                            }
-                            rowCell10.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 18, 18);
-
-                            Cell rowCell11 = sheetRow.createCell(19);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                rowCell11.setCellValue(tree.getLineMessages().get(0).getUser().getComeDate());
-                            }
-                            rowCell11.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 19, 19);
-
-                            Cell rowCell12 = sheetRow.createCell(20);
-                            if (!tree.getLineMessages().isEmpty()) {
-                                rowCell12.setCellValue(tree.getLineMessages().get(0).getUser().getFinishDate());
-                            }
-                            rowCell12.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 20, 20);
-
-                            Cell cell11 = sheetRow.createCell(21);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getMessage() != null) {
-                                cell11.setCellValue("广州市" + tree.getLineMessages().get(0).getMessage().getProvince());
-                            }
-                            cell11.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 21, 21);
-
-                            Cell cell12 = sheetRow.createCell(22);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getMessage() != null) {
-                                cell12.setCellValue(tree.getLineMessages().get(0).getMessage().getAddress());
-                            }
-                            cell12.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 22, 22);
-
-                            Cell cell13 = sheetRow.createCell(23);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getRoute() != null) {
-                                if (tree.getLineMessages().get(0).getRoute().getStatus().equals((short)0)) {
-                                    cell13.setCellValue("");
-                                } else {
-                                    cell13.setCellValue(tree.getLineMessages().get(0).getRoute().getName());
-                                }
-
-                            }
-                            cell13.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 23, 23);
-
-
-                            Cell cell17 = sheetRow.createCell(24);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getContactHistory() != null) {
-                                cell17.setCellValue(tree.getLineMessages().get(0).getContactHistory().getName());
-                            }
-                            cell17.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 24, 24);
-
-                            Cell cell18 = sheetRow.createCell(25);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getAreaHistory() != null) {
-                                cell18.setCellValue(tree.getLineMessages().get(0).getAreaHistory().getName());
-                            }
-                            cell18.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 25, 25);
-
-                            Cell cell19 = sheetRow.createCell(26);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getPersonHistory() != null) {
-                                cell19.setCellValue(tree.getLineMessages().get(0).getPersonHistory().getName());
-                            }
-                            cell19.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 26, 26);
-
-                            Cell rowCell13 = sheetRow.createCell(27);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getHealth() != null) {
-                                if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)0)) {
-                                    rowCell13.setCellValue("一切正常");
-                                } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)1)) {
-                                    rowCell13.setCellValue("疑似新型冠状病毒肺炎");
-                                } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)2)) {
-                                    rowCell13.setCellValue("确认新型冠状病毒肺炎");
-                                } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)3)) {
-                                    rowCell13.setCellValue("治愈新型冠状病毒肺炎");
-                                } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)4)) {
-                                    rowCell13.setCellValue("其他状态（如咳嗽、流鼻涕、嗓子发炎.");
-                                }
-                            }
-                            rowCell13.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 27, 27);
-
-                            Cell cell20 = sheetRow.createCell(28);
-                            if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getMessage() != null) {
-                                cell20.setCellValue(tree.getLineMessages().get(0).getMessage().getNote());
-                            }
-                            cell20.setCellStyle(weiRuan10);
-                            PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 28, 28);
-
-
-                            lobourIndex++;
                         }
 
 
-                    no++;
-                }
+                        int sss=0;
+                        if (tree.getLineMessages().size() != 0) {
+                            sss=tree.getLineMessages().size();
+                        }else {
+                            sss=1;
+                        }
+                        PoiUtils.mergeCell(sheetAt,lobourIndex,lobourIndex+sss-1,2,2);
+                        PoiUtils.mergeForm(sheetAt,work,lobourIndex,lobourIndex+sss-1,2,2);
 
+                        if (!tree.getLineMessages().isEmpty()) {
+                                for (TableLineMessage lineMessage : tree.getLineMessages()) {
+                                     HSSFRow atRow = sheetAt.getRow(lobourIndex);
+                                    sheetAt.setColumnWidth(2,12*256);
+                                    if (atRow == null) {
+                                        atRow= sheetAt.createRow(lobourIndex);
+                                    }
+
+                                    Cell cell3 = atRow.createCell(3);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        if (lineMessage.getUser().getPersonType().equals("gl")) {
+                                            cell3.setCellValue("管理人员");
+                                        } else {
+                                            cell3.setCellValue("劳务人员");
+                                        }
+                                    }
+                                    cell3.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 3, 3);
+
+
+                                    Cell cell4 = atRow.createCell(4);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        cell4.setCellValue(lineMessage.getUser().getUserName());
+                                    }
+                                    cell4.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 4, 4);
+
+                                    Cell rowCell5 = atRow.createCell(5);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        if (lineMessage.getDetailAlarm() != 0) {
+                                            rowCell5.setCellValue("异常");
+                                            PoiUtils.setBackColor(work, rowCell5);
+                                        } else {
+                                            rowCell5.setCellValue("正常");
+                                            rowCell5.setCellStyle(weiRuan10);
+                                        }
+                                    }
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 5, 5);
+
+                                    Cell rowCell6 = atRow.createCell(6);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        if (lineMessage.getMsgTotalAlarm() != 0) {
+                                            rowCell6.setCellValue("有");
+                                            PoiUtils.setBackColor(work, rowCell6);
+                                        } else {
+                                            rowCell6.setCellValue("无");
+                                            rowCell6.setCellStyle(weiRuan10);
+                                        }
+                                    }
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 6, 6);
+
+                                    //异常血液检测、核酸检测
+                                    Cell sheetAtRowCell = atRow.createCell(7);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        if (lineMessage.getBloodTest().getStatus() == 0) {
+                                            sheetAtRowCell.setCellValue("否");
+                                            sheetAtRowCell.setCellStyle(weiRuan10);
+                                        }else {
+                                            sheetAtRowCell.setCellValue(lineMessage.getBloodTest().getName());
+                                            sheetAtRowCell.setCellStyle(weiRuan10);
+                                            if (lineMessage.getBloodTest().getTestResult() == (short) 1) {
+                                                sheetAtRowCell.setCellStyle(red10);
+                                                PoiUtils.setBackColor(work,sheetAtRowCell);
+                                            }
+                                        }
+                                    }
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 7, 7);
+
+                                    Cell rowCell4 = atRow.createCell(8);
+                                    if (!tree.getLineMessages().isEmpty()&&lineMessage.getBloodTest().getTestDate()!=null) {
+                                        rowCell4.setCellValue(changeDate(lineMessage.getBloodTest().getTestDate()));
+                                    }
+                                    rowCell4.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 8, 8);
+
+                                    Cell atRowCell = atRow.createCell(9);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        if (lineMessage.getNucleaseTest().getStatus() == 0) {
+                                            atRowCell.setCellValue("否");
+                                            atRowCell.setCellStyle(weiRuan10);
+                                        }else {
+                                            atRowCell.setCellValue(lineMessage.getNucleaseTest().getName());
+                                            atRowCell.setCellStyle(weiRuan10);
+                                            if (lineMessage.getNucleaseTest().getTestResult() == (short) 1) {
+                                                atRowCell.setCellStyle(red10);
+                                                PoiUtils.setBackColor(work,atRowCell);
+                                            }
+                                        }
+                                    }
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 9, 9);
+
+                                    Cell atRowCell1 = atRow.createCell(10);
+                                    if (!tree.getLineMessages().isEmpty()&&lineMessage.getNucleaseTest().getTestDate()!=null) {
+                                        atRowCell1.setCellValue(changeDate(lineMessage.getNucleaseTest().getTestDate()));
+                                    }
+                                    atRowCell1.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 10, 10);
+
+                                    Cell rowCell14 = atRow.createCell(11);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        rowCell14.setCellValue(lineMessage.getWorkStatus().getName());
+                                    }
+                                    rowCell14.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 11, 11);
+
+                                    Cell rowCell7 = atRow.createCell(12);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        rowCell7.setCellValue(lineMessage.getUser().getAge());
+                                    }
+                                    rowCell7.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 12, 12);
+
+                                    Cell rowCell8 = atRow.createCell(13);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        rowCell8.setCellValue(lineMessage.getUser().getPhone());
+                                    }
+                                    rowCell8.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 13, 13);
+
+                                    Cell rowCell9 = atRow.createCell(14);
+                                    if (lineMessage!=null) {
+                                        if (lineMessage.getUser().getIdCard().length() == 18) {
+                                            String substring1 = lineMessage.getUser().getIdCard().substring(0, 10);
+                                            rowCell9.setCellValue(substring1+"********");
+                                        }else {
+                                            rowCell9.setCellValue(lineMessage.getUser().getIdCard());
+                                        }
+                                    }
+                                    rowCell9.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 14, 14);
+
+
+                                    if (lineMessage!=null) {
+                                        for (TempDetail tempDetail : lineMessage.getTemp()) {
+                                            if (tempDetail.getTempType().equals((short) 1)) {
+                                                Cell cell11 = atRow.createCell(15);
+                                                cell11.setCellValue(tempDetail.getTemperature().doubleValue());
+                                                cell11.setCellStyle(weiRuan10);
+                                                if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
+                                                    PoiUtils.setBackColor(work,cell11);
+                                                }
+                                            } else if (tempDetail.getTempType().equals((short) 2)) {
+                                                Cell cell11 = atRow.createCell(16);
+                                                cell11.setCellValue(tempDetail.getTemperature().doubleValue());
+                                                cell11.setCellStyle(weiRuan10);
+                                                if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
+                                                    PoiUtils.setBackColor(work,cell11);
+                                                }
+                                            } else if (tempDetail.getTempType().equals((short) 3)) {
+                                                Cell cell11 = atRow.createCell(17);
+                                                cell11.setCellValue(tempDetail.getTemperature().doubleValue());
+                                                cell11.setCellStyle(weiRuan10);
+                                                if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
+                                                    PoiUtils.setBackColor(work,cell11);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 15, 15);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 16, 16);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 17, 17);
+
+                                    Cell rowCell10 = atRow.createCell(18);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        if (lineMessage.getUser().getStayStatus().equals((short) 1)) {
+                                            rowCell10.setCellValue("处于14天隔离期");
+                                        } else if (lineMessage.getUser().getStayStatus().equals((short) 2)) {
+                                            rowCell10.setCellValue("已完成14天隔离");
+                                        } else if (lineMessage.getUser().getStayStatus().equals((short) 3)) {
+                                            rowCell10.setCellValue("休假期间一直在穗");
+                                        }
+                                    }
+                                    rowCell10.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 18, 18);
+
+                                    Cell rowCell11 = atRow.createCell(19);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        rowCell11.setCellValue(lineMessage.getUser().getComeDate());
+                                    }
+                                    rowCell11.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 19, 19);
+
+                                    Cell rowCell12 = atRow.createCell(20);
+                                    if (!tree.getLineMessages().isEmpty()) {
+                                        rowCell12.setCellValue(lineMessage.getUser().getFinishDate());
+                                    }
+                                    rowCell12.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 20, 20);
+
+                                    Cell cell11 = atRow.createCell(21);
+                                    if (lineMessage!=null&& lineMessage.getMessage() != null) {
+                                        cell11.setCellValue("广州市" + lineMessage.getMessage().getProvince());
+                                    }
+                                    cell11.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 21, 21);
+
+                                    Cell cell12 = atRow.createCell(22);
+                                    if (!tree.getLineMessages().isEmpty() && lineMessage.getMessage() != null) {
+                                        cell12.setCellValue(lineMessage.getMessage().getAddress());
+                                    }
+                                    cell12.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 22, 22);
+
+                                    Cell cell13 = atRow.createCell(23);
+                                    if (!tree.getLineMessages().isEmpty() && lineMessage.getRoute() != null) {
+                                        if (lineMessage.getRoute().getStatus().equals((short)0)) {
+                                            cell13.setCellValue("");
+                                        } else {
+                                            cell13.setCellValue(lineMessage.getRoute().getName());
+                                        }
+
+                                    }
+                                    cell13.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 23, 23);
+
+
+                                    Cell cell17 = atRow.createCell(24);
+                                    if (!tree.getLineMessages().isEmpty() && lineMessage.getContactHistory() != null) {
+                                        cell17.setCellValue(lineMessage.getContactHistory().getName());
+                                    }
+                                    cell17.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 24, 24);
+
+                                    Cell cell18 = atRow.createCell(25);
+                                    if (!tree.getLineMessages().isEmpty() && lineMessage.getAreaHistory() != null) {
+                                        cell18.setCellValue(lineMessage.getAreaHistory().getName());
+                                    }
+                                    cell18.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 25, 25);
+
+                                    Cell cell19 = atRow.createCell(26);
+                                    if (!tree.getLineMessages().isEmpty() && lineMessage.getPersonHistory() != null) {
+                                        cell19.setCellValue(lineMessage.getPersonHistory().getName());
+                                    }
+                                    cell19.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 26, 26);
+
+                                    Cell rowCell13 = atRow.createCell(27);
+                                    if (!tree.getLineMessages().isEmpty() &&lineMessage.getHealth() != null) {
+                                        if (lineMessage.getHealth().getStatus().equals((short)0)) {
+                                            rowCell13.setCellValue("一切正常");
+                                        } else if (lineMessage.getHealth().getStatus().equals((short)1)) {
+                                            rowCell13.setCellValue("疑似新型冠状病毒肺炎");
+                                        } else if (lineMessage.getHealth().getStatus().equals((short)2)) {
+                                            rowCell13.setCellValue("确认新型冠状病毒肺炎");
+                                        } else if (lineMessage.getHealth().getStatus().equals((short)3)) {
+                                            rowCell13.setCellValue("治愈新型冠状病毒肺炎");
+                                        } else if (lineMessage.getHealth().getStatus().equals((short)4)) {
+                                            rowCell13.setCellValue("其他状态（如咳嗽、流鼻涕、嗓子发炎.");
+                                        }
+                                    }
+                                    rowCell13.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 27, 27);
+
+                                    Cell cell20 = atRow.createCell(28);
+                                    if (!tree.getLineMessages().isEmpty() && lineMessage.getMessage() != null) {
+                                        cell20.setCellValue(lineMessage.getMessage().getNote());
+                                    }
+                                    cell20.setCellStyle(weiRuan10);
+                                    PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 28, 28);
+
+                                    lobourIndex++;
+                                }
+
+                            }
+                            else {
+                                HSSFRow atRow = sheetAt.getRow(lobourIndex);
+                                sheetAt.setColumnWidth(2,12*256);
+                                if (atRow == null) {
+                                    atRow= sheetAt.createRow(lobourIndex);
+                                }
+
+                                Cell cell3 = atRow.createCell(3);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getUser().getPersonType().equals("gl")) {
+                                        cell3.setCellValue("管理人员");
+                                    } else {
+                                        cell3.setCellValue("劳务人员");
+                                    }
+                                }
+                                cell3.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 3, 3);
+
+
+                                Cell cell4 = atRow.createCell(4);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    cell4.setCellValue(tree.getLineMessages().get(0).getUser().getUserName());
+                                }
+                                cell4.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 4, 4);
+
+                                Cell rowCell5 = atRow.createCell(5);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getDetailAlarm() != 0) {
+                                        rowCell5.setCellValue("异常");
+                                        PoiUtils.setBackColor(work, rowCell5);
+                                    } else {
+                                        rowCell5.setCellValue("正常");
+                                        rowCell5.setCellStyle(weiRuan10);
+                                    }
+                                }
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 5, 5);
+
+                                Cell rowCell6 = atRow.createCell(6);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getMsgTotalAlarm() != 0) {
+                                        rowCell6.setCellValue("有");
+                                        PoiUtils.setBackColor(work, rowCell6);
+                                    } else {
+                                        rowCell6.setCellValue("无");
+                                        rowCell6.setCellStyle(weiRuan10);
+                                    }
+                                }
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 6, 6);
+
+                                //异常血液检测、核酸检测
+                                Cell sheetAtRowCell = atRow.createCell(7);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getBloodTest().getStatus() == 0) {
+                                        sheetAtRowCell.setCellValue("否");
+                                        sheetAtRowCell.setCellStyle(weiRuan10);
+                                    }else {
+                                        sheetAtRowCell.setCellValue(tree.getLineMessages().get(0).getBloodTest().getName());
+                                        sheetAtRowCell.setCellStyle(weiRuan10);
+                                        if (tree.getLineMessages().get(0).getBloodTest().getTestResult() == (short) 1) {
+                                            sheetAtRowCell.setCellStyle(red10);
+                                            PoiUtils.setBackColor(work,sheetAtRowCell);
+                                        }
+                                    }
+                                }
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 7, 7);
+
+                                Cell rowCell4 = atRow.createCell(8);
+                                if (!tree.getLineMessages().isEmpty()&&tree.getLineMessages().get(0).getBloodTest().getTestDate()!=null) {
+                                    rowCell4.setCellValue(changeDate(tree.getLineMessages().get(0).getBloodTest().getTestDate()));
+                                }
+                                rowCell4.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 8, 8);
+
+                                Cell atRowCell = atRow.createCell(9);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getNucleaseTest().getStatus() == 0) {
+                                        atRowCell.setCellValue("否");
+                                        atRowCell.setCellStyle(weiRuan10);
+                                    }else {
+                                        atRowCell.setCellValue(tree.getLineMessages().get(0).getNucleaseTest().getName());
+                                        atRowCell.setCellStyle(weiRuan10);
+                                        if (tree.getLineMessages().get(0).getNucleaseTest().getTestResult() == (short) 1) {
+                                            atRowCell.setCellStyle(red10);
+                                            PoiUtils.setBackColor(work,atRowCell);
+                                        }
+                                    }
+                                }
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 9, 9);
+
+                                Cell atRowCell1 = atRow.createCell(10);
+                                if (!tree.getLineMessages().isEmpty()&&tree.getLineMessages().get(0).getNucleaseTest().getTestDate()!=null) {
+                                    atRowCell1.setCellValue(changeDate(tree.getLineMessages().get(0).getNucleaseTest().getTestDate()));
+                                }
+                                atRowCell1.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 10, 10);
+
+                                Cell rowCell14 = atRow.createCell(11);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    rowCell14.setCellValue(tree.getLineMessages().get(0).getWorkStatus().getName());
+                                }
+                                rowCell14.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 11, 11);
+
+                                Cell rowCell7 = atRow.createCell(12);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    rowCell7.setCellValue(tree.getLineMessages().get(0).getUser().getAge());
+                                }
+                                rowCell7.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 12, 12);
+
+                                Cell rowCell8 = atRow.createCell(13);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    rowCell8.setCellValue(tree.getLineMessages().get(0).getUser().getPhone());
+                                }
+                                rowCell8.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 13, 13);
+
+                                Cell rowCell9 = atRow.createCell(14);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getUser().getIdCard().length() == 18) {
+                                        String substring1 = tree.getLineMessages().get(0).getUser().getIdCard().substring(0, 10);
+                                        rowCell9.setCellValue(substring1+"********");
+                                    }else {
+                                        rowCell9.setCellValue(tree.getLineMessages().get(0).getUser().getIdCard());
+                                    }
+                                }
+                                rowCell9.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 14, 14);
+
+
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    for (TempDetail tempDetail : tree.getLineMessages().get(0).getTemp()) {
+                                        if (tempDetail.getTempType().equals((short) 1)) {
+                                            Cell cell11 = atRow.createCell(15);
+                                            cell11.setCellValue(tempDetail.getTemperature().doubleValue());
+                                            cell11.setCellStyle(weiRuan10);
+                                            if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
+                                                PoiUtils.setBackColor(work,cell11);
+                                            }
+                                        } else if (tempDetail.getTempType().equals((short) 2)) {
+                                            Cell cell11 = atRow.createCell(16);
+                                            cell11.setCellValue(tempDetail.getTemperature().doubleValue());
+                                            cell11.setCellStyle(weiRuan10);
+                                            if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
+                                                PoiUtils.setBackColor(work,cell11);
+                                            }
+                                        } else if (tempDetail.getTempType().equals((short) 3)) {
+                                            Cell cell11 = atRow.createCell(17);
+                                            cell11.setCellValue(tempDetail.getTemperature().doubleValue());
+                                            cell11.setCellStyle(weiRuan10);
+                                            if (tempDetail.getTemperature().doubleValue() > tempDetail.getUpperLimit().doubleValue()) {
+                                                PoiUtils.setBackColor(work,cell11);
+                                            }
+                                        }
+                                    }
+                                }
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 15, 15);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 16, 16);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 17, 17);
+
+                                Cell rowCell10 = atRow.createCell(18);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    if (tree.getLineMessages().get(0).getUser().getStayStatus().equals((short) 1)) {
+                                        rowCell10.setCellValue("处于14天隔离期");
+                                    } else if (tree.getLineMessages().get(0).getUser().getStayStatus().equals((short) 2)) {
+                                        rowCell10.setCellValue("已完成14天隔离");
+                                    } else if (tree.getLineMessages().get(0).getUser().getStayStatus().equals((short) 3)) {
+                                        rowCell10.setCellValue("休假期间一直在穗");
+                                    }
+                                }
+                                rowCell10.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 18, 18);
+
+                                Cell rowCell11 = atRow.createCell(19);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    rowCell11.setCellValue(tree.getLineMessages().get(0).getUser().getComeDate());
+                                }
+                                rowCell11.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 19, 19);
+
+                                Cell rowCell12 = atRow.createCell(20);
+                                if (!tree.getLineMessages().isEmpty()) {
+                                    rowCell12.setCellValue(tree.getLineMessages().get(0).getUser().getFinishDate());
+                                }
+                                rowCell12.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 20, 20);
+
+                                Cell cell11 = atRow.createCell(21);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getMessage() != null) {
+                                    cell11.setCellValue("广州市" + tree.getLineMessages().get(0).getMessage().getProvince());
+                                }
+                                cell11.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 21, 21);
+
+                                Cell cell12 = atRow.createCell(22);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getMessage() != null) {
+                                    cell12.setCellValue(tree.getLineMessages().get(0).getMessage().getAddress());
+                                }
+                                cell12.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 22, 22);
+
+                                Cell cell13 = atRow.createCell(23);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getRoute() != null) {
+                                    if (tree.getLineMessages().get(0).getRoute().getStatus().equals((short)0)) {
+                                        cell13.setCellValue("");
+                                    } else {
+                                        cell13.setCellValue(tree.getLineMessages().get(0).getRoute().getName());
+                                    }
+
+                                }
+                                cell13.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 23, 23);
+
+
+                                Cell cell17 = atRow.createCell(24);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getContactHistory() != null) {
+                                    cell17.setCellValue(tree.getLineMessages().get(0).getContactHistory().getName());
+                                }
+                                cell17.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 24, 24);
+
+                                Cell cell18 = atRow.createCell(25);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getAreaHistory() != null) {
+                                    cell18.setCellValue(tree.getLineMessages().get(0).getAreaHistory().getName());
+                                }
+                                cell18.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 25, 25);
+
+                                Cell cell19 = atRow.createCell(26);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getPersonHistory() != null) {
+                                    cell19.setCellValue(tree.getLineMessages().get(0).getPersonHistory().getName());
+                                }
+                                cell19.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 26, 26);
+
+                                Cell rowCell13 = atRow.createCell(27);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getHealth() != null) {
+                                    if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)0)) {
+                                        rowCell13.setCellValue("一切正常");
+                                    } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)1)) {
+                                        rowCell13.setCellValue("疑似新型冠状病毒肺炎");
+                                    } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)2)) {
+                                        rowCell13.setCellValue("确认新型冠状病毒肺炎");
+                                    } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)3)) {
+                                        rowCell13.setCellValue("治愈新型冠状病毒肺炎");
+                                    } else if (tree.getLineMessages().get(0).getHealth().getStatus().equals((short)4)) {
+                                        rowCell13.setCellValue("其他状态（如咳嗽、流鼻涕、嗓子发炎.");
+                                    }
+                                }
+                                rowCell13.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 27, 27);
+
+                                Cell cell20 = atRow.createCell(28);
+                                if (!tree.getLineMessages().isEmpty() && tree.getLineMessages().get(0).getMessage() != null) {
+                                    cell20.setCellValue(tree.getLineMessages().get(0).getMessage().getNote());
+                                }
+                                cell20.setCellStyle(weiRuan10);
+                                PoiUtils.mergeForm(sheetAt, work, lobourIndex, lobourIndex, 28, 28);
+
+
+                                lobourIndex++;
+                            }
+                        }
+
+                    no++;
+
+
+                }
             }
 
 
