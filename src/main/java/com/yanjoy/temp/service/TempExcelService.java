@@ -19,6 +19,11 @@ public interface TempExcelService {
     List<TableLineMessage> getTableLineMsg(TempParam param);
 
     /**
+     * 推送
+     */
+    List<TableLineMessage> pushMsg(String dateDay);
+
+    /**
      *劳务或管理子表数据
      */
     ChildTable childTable(TempParam param);

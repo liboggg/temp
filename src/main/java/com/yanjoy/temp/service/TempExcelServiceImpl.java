@@ -63,6 +63,19 @@ public class TempExcelServiceImpl implements TempExcelService {
     }
 
     @Override
+    public List<TableLineMessage> pushMsg(String dateDay) {
+        if ( StringUtils.isEmpty(dateDay)) {
+            throw new IllegalArgumentException("the dateDay is not allowed be null");
+        }
+        TempParam param = new TempParam();
+        param.setDateDay(dateDay);
+        return pullMsgAndSort(voMapper.getTableLineMessage(param).stream()
+                .filter(a -> StringUtils.isNotEmpty(a.getId()))
+                .peek(a -> a.setUser(userService.pullStatus(a.getUser())))
+                .collect(Collectors.toList()));
+    }
+
+    @Override
     public ChildTable childTable(TempParam param) {
         if (StringUtils.isEmpty(param.getProjectId()) || StringUtils.isEmpty(param.getDateDay())) {
             throw new IllegalArgumentException("the projectId,dateDay is not allowed be null");
