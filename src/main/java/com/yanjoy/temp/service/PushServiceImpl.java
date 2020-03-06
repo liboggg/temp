@@ -39,7 +39,7 @@ public class PushServiceImpl implements PushService, Runnable {
     /**
      * 每日执行时间
      */
-    private static final String DAY_TIME = "10:00:00";
+    private static final String PUSH_TIME = "10:00:00";
 
     @Override
     public List<TableLineMessageVo> getPushMsg(String dateDay) {
@@ -139,25 +139,8 @@ public class PushServiceImpl implements PushService, Runnable {
                         stringRedisTemplate.expire(LOCK, 100000, TimeUnit.MILLISECONDS);
                     }
                 }
-                List<TableLineMessageVo> pushMsg = new ArrayList<>();
-                try {
-                    pushMsg = getPushMsg("2020-03-01");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-                for (TableLineMessageVo tableLineMessageVo : pushMsg) {
-                    executorService.execute(() -> {
-                        try {
-                            String s = HttpUtil.postJson(POST_URL,(JSONObject) JSONObject.toJSON(tableLineMessageVo), "UTF-8");
-                            logger.info("temp push result is -> {} , activity is -> {}",s,tableLineMessageVo.getActivity());
-                        } catch (IOException e) {
-                            logger.error("temp push error , url -> {}, msg -> {}",POST_URL,tableLineMessageVo);
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                Thread.sleep(10000);
+                doJob(TempTimeUtils.dateToYMD(new Date()));
+                Thread.sleep(100000);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -172,11 +155,34 @@ public class PushServiceImpl implements PushService, Runnable {
         }
     }
 
+    @Override
+    public void doJob(String dayTime) {
+        List<TableLineMessageVo> pushMsg = new ArrayList<>();
+        try {
+            pushMsg = getPushMsg(dayTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        for (TableLineMessageVo tableLineMessageVo : pushMsg) {
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(tableLineMessageVo);
+            executorService.execute(() -> {
+                try {
+                    String resp = HttpUtil.postJson(POST_URL, jsonObject, "UTF-8");
+                    logger.info("temp push result is -> {} , msg is -> {}", resp, jsonObject.toJSONString());
+                } catch (IOException e) {
+                    logger.error("temp push error , url -> {}, msg -> {}", POST_URL, jsonObject.toJSONString());
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
     /**
      * 任务启动
      */
     @PostConstruct
     public void startJob() {
-        TimerUtil.dayJobStart(this, DAY_TIME);
+        TimerUtil.dayJobStart(this, PUSH_TIME);
     }
 }
