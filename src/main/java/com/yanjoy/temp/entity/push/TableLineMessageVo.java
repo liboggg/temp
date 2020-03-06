@@ -2,8 +2,6 @@ package com.yanjoy.temp.entity.push;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class TableLineMessageVo {
     private String activity;
@@ -21,6 +19,6 @@ public class TableLineMessageVo {
     private String index;
     private String joinid;
     private String timetaken;
-    private Date submittime;
+    private String submittime;
     private String sign;
 }
