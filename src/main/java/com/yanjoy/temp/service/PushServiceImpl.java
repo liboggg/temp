@@ -54,16 +54,17 @@ public class PushServiceImpl implements PushService, Runnable {
             TableLineMessageVo tableLineMessageVo = new TableLineMessageVo();
             tableLineMessageVo.setActivity(tableLineMessage.getId());
             tableLineMessageVo.setIpaddress("124.42.243.98");
-//            if (tableLineMessage.getUser().getProjectId().equals("6245721945602523136")) {
-//                tableLineMessageVo.setName("广州市轨道交通十一号线疫情防控信息采集");
-//            } else if (tableLineMessage.getUser().getProjectId().equals("6245721945602523137")) {
-//                tableLineMessageVo.setName("广州市轨道交通十三号线二期疫情防控信息采集");
-//            } else if (tableLineMessage.getUser().getProjectId().equals("6245721945602523139")) {
-//                tableLineMessageVo.setName("广州市轨道交通七号线二期疫情防控信息采集");
-//            } else if (tableLineMessage.getUser().getProjectId().equals("6422195692059623424")) {
-//                tableLineMessageVo.setName("广州市中心城区地下综合管廊疫情防控信息采集");
-//            }
-            tableLineMessageVo.setName(tempExcelService.chooseProjectName(tableLineMessage.getUser().getProjectId()));
+            if ("6245721945602523136".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setName("广州市轨道交通十一号线疫情防控信息采集");
+            } else if ("6245721945602523137".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setName("广州市轨道交通十三号线二期疫情防控信息采集");
+            } else if ("6245721945602523139".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setName("广州市轨道交通七号线二期疫情防控信息采集");
+            } else if ("6422195692059623424".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setName("广州市中心城区地下综合管廊疫情防控信息采集");
+            } else {
+                tableLineMessageVo.setName(" ");
+            }
             tableLineMessageVo.setQ1(tableLineMessage.getUser().getUserName());
             tableLineMessageVo.setQ2(tableLineMessage.getUser().getPhone());
             tableLineMessageVo.setQ3(tableLineMessage.getUser().getOrgName());
