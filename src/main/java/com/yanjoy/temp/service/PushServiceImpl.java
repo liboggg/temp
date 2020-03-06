@@ -149,9 +149,10 @@ public class PushServiceImpl implements PushService, Runnable {
                 for (TableLineMessageVo tableLineMessageVo : pushMsg) {
                     executorService.execute(() -> {
                         try {
-                            HttpUtil.postJson(POST_URL, JSONObject.parseObject(tableLineMessageVo.toString()), "UFT-8");
+                            String s = HttpUtil.postJson(POST_URL, JSONObject.parseObject(tableLineMessageVo.toString()), "UFT-8");
+                            logger.info("temp push result is -> {}",s);
                         } catch (IOException e) {
-                            logger.error("temp push failed , url -> {}, msg -> {}",POST_URL,tableLineMessageVo);
+                            logger.error("temp push error , url -> {}, msg -> {}",POST_URL,tableLineMessageVo);
                             e.printStackTrace();
                         }
                     });
