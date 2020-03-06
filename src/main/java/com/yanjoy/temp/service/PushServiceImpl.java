@@ -32,7 +32,7 @@ public class PushServiceImpl implements PushService, Runnable {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    private static final String POST_URL = "";
+    private static final String POST_URL = "http://yqfk7.crungoo.com:8008/WJX/GetRawDataApi";
 
     private static final String LOCK = "temp_push_lock";
 
@@ -141,7 +141,7 @@ public class PushServiceImpl implements PushService, Runnable {
                 }
                 List<TableLineMessageVo> pushMsg = new ArrayList<>();
                 try {
-                    pushMsg = getPushMsg(TempTimeUtils.dateToYMD(new Date()));
+                    pushMsg = getPushMsg("2020-03-01");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -149,8 +149,8 @@ public class PushServiceImpl implements PushService, Runnable {
                 for (TableLineMessageVo tableLineMessageVo : pushMsg) {
                     executorService.execute(() -> {
                         try {
-                            String s = HttpUtil.postJson(POST_URL, JSONObject.parseObject(tableLineMessageVo.toString()), "UFT-8");
-                            logger.info("temp push result is -> {}",s);
+                            String s = HttpUtil.postJson(POST_URL,(JSONObject) JSONObject.toJSON(tableLineMessageVo), "UTF-8");
+                            logger.info("temp push result is -> {} , activity is -> {}",s,tableLineMessageVo.getActivity());
                         } catch (IOException e) {
                             logger.error("temp push error , url -> {}, msg -> {}",POST_URL,tableLineMessageVo);
                             e.printStackTrace();
