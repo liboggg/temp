@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,11 +33,8 @@ public class PushServiceImpl implements PushService, Runnable {
     private StringRedisTemplate stringRedisTemplate;
 
     private static final String POST_URL = "http://yqfk7.crungoo.com:8008/WJX/GetRawDataApi";
-
     private static final String LOCK = "temp_push_lock";
-
     private static final String ACTIVITY = "60296552";
-
     private static final String PUSH_TOKEN = "fd67e52f-a229-4aff-a7c6-dd6c59259d43";
 
     /**
@@ -72,7 +68,17 @@ public class PushServiceImpl implements PushService, Runnable {
             }
             tableLineMessageVo.setQ1(tableLineMessage.getUser().getUserName());
             tableLineMessageVo.setQ2(tableLineMessage.getUser().getPhone());
-            tableLineMessageVo.setQ3(tableLineMessage.getUser().getOrgName().replace("/", "‐"));
+
+            if ("6245721945602523136".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setQ3(2);
+            } else if ("6245721945602523137".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setQ3(3);
+            } else if ("6245721945602523139".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setQ3(4);
+            } else if ("6422195692059623424".equals(tableLineMessage.getUser().getProjectId())) {
+                tableLineMessageVo.setQ3(5);
+            }
+
             tableLineMessageVo.setQ4("广东省广州市[113.27,23.13]");
             if (tableLineMessage.getWorkStatus().getStatus() == (short) 0) {
                 tableLineMessageVo.setQ5("1");
@@ -109,7 +115,7 @@ public class PushServiceImpl implements PushService, Runnable {
             } else if (tableLineMessage.getHealth().getStatus() == (short) 4) {
                 tableLineMessageVo.setQ8("5");
             }else {
-                tableLineMessageVo.setQ8("1");
+                tableLineMessageVo.setQ8("5");
             }
 
 
