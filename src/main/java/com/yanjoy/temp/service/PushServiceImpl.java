@@ -1,29 +1,28 @@
 package com.yanjoy.temp.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yanjoy.temp.entity.base.TempParam;
 import com.yanjoy.temp.entity.excel.TableLineMessage;
 import com.yanjoy.temp.entity.push.TableLineMessageVo;
 import com.yanjoy.temp.utils.HttpUtil;
 import com.yanjoy.temp.utils.TempTimeUtils;
-import com.yanjoy.temp.utils.TimerUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Service("pushService")
-public class PushServiceImpl implements PushService, Runnable {
+public class PushServiceImpl implements PushService {
 
     private static final Logger logger = LoggerFactory.getLogger(PushServiceImpl.class);
     @Autowired
@@ -48,124 +47,139 @@ public class PushServiceImpl implements PushService, Runnable {
         return getPushMessage(list);
     }
 
+    @Override
+    @Async
+    public void pushSingle(String msgId) {
+        TempParam param = new TempParam();
+        param.setMessageId(msgId);
+        TableLineMessage message = tempExcelService.getSubmitMessage(param).stream().findFirst().orElse(null);
+        if (null == message) {
+            return;
+        }
+        TableLineMessageVo pushVo = toPushVo(message, (int) System.currentTimeMillis());
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(pushVo);
+        try {
+            String resp = HttpUtil.postJson(POST_URL, jsonObject, "UTF-8");
+            logger.info("temp push result is -> {} , msg is -> {}", resp, "\r\n" + jsonObject.toJSONString());
+        } catch (Exception e) {
+            logger.error("temp push error , url -> {}, msg -> {}", POST_URL, "\r\n" + jsonObject.toJSONString());
+            e.printStackTrace();
+        }
+    }
+
     public List<TableLineMessageVo> getPushMessage(List<TableLineMessage> tableLineMsg) {
         List<TableLineMessageVo> result = new ArrayList<>();
         int index = 1;
         for (TableLineMessage tableLineMessage : tableLineMsg) {
-            TableLineMessageVo tableLineMessageVo = new TableLineMessageVo();
-            tableLineMessageVo.setActivity(ACTIVITY);
-            tableLineMessageVo.setIpaddress("124.42.243.98");
-            if ("6245721945602523136".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setName("广州市轨道交通十一号线疫情防控信息采集");
-            } else if ("6245721945602523137".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setName("广州市轨道交通十三号线二期疫情防控信息采集");
-            } else if ("6245721945602523139".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setName("广州市轨道交通七号线二期疫情防控信息采集");
-            } else if ("6422195692059623424".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setName("广州市中心城区地下综合管廊疫情防控信息采集");
-            } else {
-                tableLineMessageVo.setName(" ");
-            }
-            tableLineMessageVo.setQ1(tableLineMessage.getUser().getUserName());
-            tableLineMessageVo.setQ2(tableLineMessage.getUser().getPhone());
-
-            if ("6245721945602523136".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setQ3(2);
-            } else if ("6245721945602523137".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setQ3(3);
-            } else if ("6245721945602523139".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setQ3(4);
-            } else if ("6422195692059623424".equals(tableLineMessage.getUser().getProjectId())) {
-                tableLineMessageVo.setQ3(5);
-            }
-
-            tableLineMessageVo.setQ4("广东省广州市[113.27,23.13]");
-            if (tableLineMessage.getWorkStatus().getStatus() == (short) 0) {
-                tableLineMessageVo.setQ5("1");
-            } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 4) {
-                tableLineMessageVo.setQ5("2");
-            } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 2) {
-                tableLineMessageVo.setQ5("3");
-            } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 5) {
-                tableLineMessageVo.setQ5("4");
-            }else {
-                tableLineMessageVo.setQ5("1");
-            }
-
-            if (tableLineMessage.getContactHistory().getStatus() == (short) 0) {
-                tableLineMessageVo.setQ6("1");
-            } else {
-                tableLineMessageVo.setQ6("2");
-            }
-
-            if (tableLineMessage.getPersonHistory().getStatus() == (short) 0) {
-                tableLineMessageVo.setQ7("1");
-            } else {
-                tableLineMessageVo.setQ7("2");
-            }
-
-            if (tableLineMessage.getHealth().getStatus() == (short) 0) {
-                tableLineMessageVo.setQ8("1");
-            } else if (tableLineMessage.getHealth().getStatus() == (short) 1) {
-                tableLineMessageVo.setQ8("2");
-            } else if (tableLineMessage.getHealth().getStatus() == (short) 2) {
-                tableLineMessageVo.setQ8("3");
-            } else if (tableLineMessage.getHealth().getStatus() == (short) 3) {
-                tableLineMessageVo.setQ8("4");
-            } else if (tableLineMessage.getHealth().getStatus() == (short) 4) {
-                tableLineMessageVo.setQ8("5");
-            }else {
-                tableLineMessageVo.setQ8("5");
-            }
-
-
-            tableLineMessageVo.setQ9("1");
-
-            tableLineMessageVo.setIndex(index + "");
-
-            tableLineMessageVo.setJoinid(tableLineMessage.getId());
-
-            Random rand = new Random();
-            int randNumber = rand.nextInt(50 - 30 + 1) + 30;
-            tableLineMessageVo.setTimetaken(randNumber + "");
-
-            tableLineMessageVo.setSubmittime(TempTimeUtils.dateToFullStr(tableLineMessage.getMessage().getCreateDate()));
-
-            tableLineMessageVo.setSign(DigestUtils.sha1Hex(ACTIVITY + index + PUSH_TOKEN));
+            result.add(toPushVo(tableLineMessage, index));
             index++;
-            result.add(tableLineMessageVo);
         }
-
         return result;
     }
 
-    @Override
-    public void run() {
-        synchronized (this) {
-            try {
-                Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(LOCK, LOCK);
-                if (!result) {
-                    return;
-                } else {
-                    if (stringRedisTemplate.hasKey(LOCK)) {
-                        stringRedisTemplate.expire(LOCK, 100000, TimeUnit.MILLISECONDS);
-                    }
-                }
-                doJob(TempTimeUtils.dateToYMD(new Date()));
-                Thread.sleep(100000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (stringRedisTemplate.hasKey(LOCK)) {
-                        stringRedisTemplate.delete(LOCK);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+    private TableLineMessageVo toPushVo(TableLineMessage tableLineMessage, int index) {
+        TableLineMessageVo tableLineMessageVo = new TableLineMessageVo();
+        tableLineMessageVo.setActivity(ACTIVITY);
+        tableLineMessageVo.setIpaddress("124.42.243.98");
+        if ("6245721945602523136".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setName("广州市轨道交通十一号线疫情防控信息采集");
+        } else if ("6245721945602523137".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setName("广州市轨道交通十三号线二期疫情防控信息采集");
+        } else if ("6245721945602523139".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setName("广州市轨道交通七号线二期疫情防控信息采集");
+        } else if ("6422195692059623424".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setName("广州市中心城区地下综合管廊疫情防控信息采集");
+        } else {
+            tableLineMessageVo.setName(" ");
         }
+        tableLineMessageVo.setQ1(tableLineMessage.getUser().getUserName());
+        tableLineMessageVo.setQ2(tableLineMessage.getUser().getPhone());
+
+        if ("6245721945602523136".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setQ3(2);
+        } else if ("6245721945602523137".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setQ3(3);
+        } else if ("6245721945602523139".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setQ3(4);
+        } else if ("6422195692059623424".equals(tableLineMessage.getUser().getProjectId())) {
+            tableLineMessageVo.setQ3(5);
+        }
+
+        tableLineMessageVo.setQ4("广东省广州市[113.27,23.13]");
+        if (tableLineMessage.getWorkStatus().getStatus() == (short) 0) {
+            tableLineMessageVo.setQ5("1");
+        } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 4) {
+            tableLineMessageVo.setQ5("2");
+        } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 2) {
+            tableLineMessageVo.setQ5("3");
+        } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 5) {
+            tableLineMessageVo.setQ5("4");
+        } else {
+            tableLineMessageVo.setQ5("1");
+        }
+
+        if (tableLineMessage.getContactHistory().getStatus() == (short) 0) {
+            tableLineMessageVo.setQ6("1");
+        } else {
+            tableLineMessageVo.setQ6("2");
+        }
+
+        if (tableLineMessage.getPersonHistory().getStatus() == (short) 0) {
+            tableLineMessageVo.setQ7("1");
+        } else {
+            tableLineMessageVo.setQ7("2");
+        }
+
+        if (tableLineMessage.getHealth().getStatus() == (short) 0) {
+            tableLineMessageVo.setQ8("1");
+        } else if (tableLineMessage.getHealth().getStatus() == (short) 1) {
+            tableLineMessageVo.setQ8("2");
+        } else if (tableLineMessage.getHealth().getStatus() == (short) 2) {
+            tableLineMessageVo.setQ8("3");
+        } else if (tableLineMessage.getHealth().getStatus() == (short) 3) {
+            tableLineMessageVo.setQ8("4");
+        } else if (tableLineMessage.getHealth().getStatus() == (short) 4) {
+            tableLineMessageVo.setQ8("5");
+        } else {
+            tableLineMessageVo.setQ8("5");
+        }
+        tableLineMessageVo.setQ9("1");
+        tableLineMessageVo.setIndex(index + "");
+        tableLineMessageVo.setJoinid(tableLineMessage.getId());
+        Random rand = new Random();
+        int randNumber = rand.nextInt(50 - 30 + 1) + 30;
+        tableLineMessageVo.setTimetaken(randNumber + "");
+        tableLineMessageVo.setSubmittime(TempTimeUtils.dateToFullStr(tableLineMessage.getMessage().getCreateDate()));
+        tableLineMessageVo.setSign(DigestUtils.sha1Hex(ACTIVITY + index + PUSH_TOKEN));
+        return tableLineMessageVo;
     }
+
+//    public void run() {
+//        synchronized (this) {
+//            try {
+//                Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(LOCK, LOCK);
+//                if (!result) {
+//                    return;
+//                } else {
+//                    if (stringRedisTemplate.hasKey(LOCK)) {
+//                        stringRedisTemplate.expire(LOCK, 100000, TimeUnit.MILLISECONDS);
+//                    }
+//                }
+//                doJob(TempTimeUtils.dateToYMD(new Date()));
+//                Thread.sleep(100000);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    if (stringRedisTemplate.hasKey(LOCK)) {
+//                        stringRedisTemplate.delete(LOCK);
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void doJob(String dayTime) {
@@ -199,8 +213,8 @@ public class PushServiceImpl implements PushService, Runnable {
     /**
      * 任务启动
      */
-    @PostConstruct
-    public void startJob() {
-        TimerUtil.dayJobStart(this, PUSH_TIME);
-    }
+//    @PostConstruct
+//    public void startJob() {
+//        TimerUtil.dayJobStart(this, PUSH_TIME);
+//    }
 }

@@ -42,6 +42,8 @@ public class TempExcelServiceImpl implements TempExcelService {
     @Autowired
     private TempUserService userService;
 
+
+    private TempExcelService tempExcelService;
     @Override
     public List<TempOrgTree> getTempOrgTree(String projectId) {
         if (StringUtils.isEmpty(projectId)) {
@@ -58,6 +60,16 @@ public class TempExcelServiceImpl implements TempExcelService {
             throw new IllegalArgumentException("the projectId,dateDay is not allowed be null");
         }
         return pullMsgAndSort(voMapper.getTableLineMessage(param).stream().peek(a ->
+                a.setUser(userService.pullStatus(a.getUser()))
+        ).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<TableLineMessage> getSubmitMessage(TempParam param) {
+        if (StringUtils.isEmpty(param.getMessageId())) {
+            throw new IllegalArgumentException("the messageId is not allowed be null");
+        }
+        return pullMsgAndSort(voMapper.getSubmitMessage(param).stream().peek(a ->
                 a.setUser(userService.pullStatus(a.getUser()))
         ).collect(Collectors.toList()));
     }

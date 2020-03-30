@@ -36,11 +36,15 @@ public class TempMonitorServiceImpl implements TempMonitorService {
     @Autowired
     private TempConfigMapper configMapper;
 
+    @Autowired
+    private PushService pushService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int save(SaveDetailPo saveDetailPo) {
         int i = 0;
 
+        String pushMsgId;
         TempMessage message = saveDetailPo.getMessage();
         TempDetail detail = saveDetailPo.getTemp();
         TempEntry route = saveDetailPo.getRoute();
@@ -130,6 +134,7 @@ public class TempMonitorServiceImpl implements TempMonitorService {
         if (null == check) {
             //msg 不存在 全插入
             //save
+            pushMsgId = msgUuid;
             message.setId(msgUuid);
             message.setDetailId(detailUuid);
             message.setRoute(routeUuid);
@@ -293,7 +298,7 @@ public class TempMonitorServiceImpl implements TempMonitorService {
             detail.setMessageId(check.getId());
             i += updateDetail(detail);
 
-
+            pushMsgId = check.getId();
             message.setId(check.getId());
             message.setDetailId(check.getDetailId());
             message.setRoute(routeUuid);
@@ -307,6 +312,7 @@ public class TempMonitorServiceImpl implements TempMonitorService {
             message.setLocation(locationUuid);
             i += updateMsg(message);
         }
+        pushService.pushSingle(pushMsgId);
         return i;
     }
 

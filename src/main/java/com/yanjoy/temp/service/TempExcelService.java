@@ -14,14 +14,20 @@ public interface TempExcelService {
      */
     List<TempOrgTree> getTempOrgTree(String projectId);
     /**
-     * 劳务或管理子表列数据封装排序
+     * 劳务或管理子表列数据封装排序 user left msg
      */
     List<TableLineMessage> getTableLineMsg(TempParam param);
+
+    /**
+     * user inner msg
+     */
+    List<TableLineMessage> getSubmitMessage(TempParam param);
 
     /**
      * 推送
      */
     List<TableLineMessage> pushMsg(String dateDay);
+
 
     /**
      *劳务或管理子表数据

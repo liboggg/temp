@@ -307,7 +307,7 @@
         from YJ_TEMP_MESSAGE ) e
         where e.rank = 1
         <if test="id != null">
-            and ytm.ID =#{id}
+            and ID =#{id}
         </if>
 
         <if test="dateDay != null">
@@ -347,5 +347,63 @@
         order by ytm.CREATE_DATE desc
     </select>
 
+    <select id="getSubmitMessage" resultMap="table_line_vo">
+        select
+        <include refid="table_line_result"/>
+        from
+        (select * from yj_temp_user where status = 0
+        <if test="orgId != null">
+            and org_id = #{orgId}
+        </if>
+        ) ytu
+        -- 这里要注意可能有不填报的。。
+        inner join (
+        select e.*
+        from (select
+        ID, ID_CARD, PROVINCE, ADDRESS, ROUTE, CONTACT_HISTORY, AREA_HISTORY, PERSON_HISTORY,
+        HEALTH, CREATE_DATE, CREATE_DAY,NOTE,DETAIL_ID ,BLOOD_TEST,NUCLEASE_TEST,WORK_STATUS,
+        dense_rank() over(partition by ID_CARD,CREATE_DAY order by CREATE_DATE desc) rank
+        from YJ_TEMP_MESSAGE ) e
+        where e.rank = 1
+        <if test="messageId != null">
+            and ID =#{messageId}
+        </if>
+
+        <if test="dateDay != null">
+            and CREATE_DAY = #{dateDay}
+        </if>
+
+        <if test="startTime != null ">
+            and CREATE_DATE >= #{startTime}
+        </if>
+
+        <if test="endTime != null">
+            and CREATE_DATE  <![CDATA[ <= ]]> #{endTime}
+        </if>
+
+        )ytm on ytm.id_card = ytu.id_card
+        left join yj_temp_detail ytd on ytd.ID_CARD = ytm.ID_CARD and ytm.CREATE_DAY = ytd.CREATE_DAY
+        left join YJ_TEMP_ENTRY route on route.id = ytm.ROUTE
+        left join YJ_TEMP_ENTRY cont on cont.id = ytm.CONTACT_HISTORY
+        left join YJ_TEMP_ENTRY area on area.id = ytm.AREA_HISTORY
+        left join YJ_TEMP_ENTRY person on person.id = ytm.PERSON_HISTORY
+        left join YJ_TEMP_ENTRY health on health.id = ytm.HEALTH
+        left join YJ_TEMP_ENTRY blood on blood.id = ytm.BLOOD_TEST
+        left join YJ_TEMP_ENTRY nuclease on nuclease.id = ytm.NUCLEASE_TEST
+        left join YJ_TEMP_ENTRY workS on workS.id = ytm.WORK_STATUS
+        <where>
+            <if test="projectId != null">
+                ytu.PROJECT_ID = #{projectId}
+            </if>
+            <if test="idCard != null">
+                and ytu.ID_CARD = #{idCard}
+            </if>
+
+            <if test="personType != null ">
+                and ytu.PERSON_TYPE = #{personType}
+            </if>
+        </where>
+        order by ytm.CREATE_DATE desc
+    </select>
 
 </mapper>

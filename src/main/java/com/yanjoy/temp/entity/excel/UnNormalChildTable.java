@@ -2,6 +2,7 @@ package com.yanjoy.temp.entity.excel;
 
 import com.yanjoy.temp.entity.org.TempOrgTree;
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,9 @@ public class UnNormalChildTable {
                 .append("人，一直在穗人员")
                 .append(statistics.getInArea())
                 .append("人,体温异常")
-                .append(statistics.getTempAbnormal()).append("人");
+                .append(statistics.getTempAbnormal()).append("人，核酸报警")
+                .append(statistics.getNucleaseAlarm()).append("人，血检报警")
+                .append(statistics.getBloodAlarm()).append("人");
         return builder.toString();
     }
 }

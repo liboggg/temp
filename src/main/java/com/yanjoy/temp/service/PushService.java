@@ -11,6 +11,12 @@ public interface PushService {
     List<TableLineMessageVo> getPushMsg(String dateDay);
 
     /**
+     * 单条推送数据
+     * @param msgId msgId
+     */
+    void pushSingle(String msgId);
+
+    /**
      * 推送消息
      * @param dayTime  yyyy-mm-dd
      */
