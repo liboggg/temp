@@ -50,19 +50,23 @@ public class PushServiceImpl implements PushService {
     @Override
     @Async
     public void pushSingle(String msgId) {
-        TempParam param = new TempParam();
-        param.setMessageId(msgId);
-        TableLineMessage message = tempExcelService.getSubmitMessage(param).stream().findFirst().orElse(null);
-        if (null == message) {
-            return;
-        }
-        TableLineMessageVo pushVo = toPushVo(message, (int) System.currentTimeMillis());
-        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(pushVo);
         try {
-            String resp = HttpUtil.postJson(POST_URL, jsonObject, "UTF-8");
-            logger.info("temp push result is -> {} , msg is -> {}", resp, "\r\n" + jsonObject.toJSONString());
+            TempParam param = new TempParam();
+            param.setMessageId(msgId);
+            TableLineMessage message = tempExcelService.getSubmitMessage(param).stream().findFirst().orElse(null);
+            if (null == message) {
+                return;
+            }
+            TableLineMessageVo pushVo = toPushVo(message, (int) System.currentTimeMillis());
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(pushVo);
+            try {
+                String resp = HttpUtil.postJson(POST_URL, jsonObject, "UTF-8");
+                logger.info("temp push result is -> {} , msg is -> {}", resp, "\r\n" + jsonObject.toJSONString());
+            } catch (Exception e) {
+                logger.error("temp push error , url -> {}, msg -> {}", POST_URL, "\r\n" + jsonObject.toJSONString());
+                e.printStackTrace();
+            }
         } catch (Exception e) {
-            logger.error("temp push error , url -> {}, msg -> {}", POST_URL, "\r\n" + jsonObject.toJSONString());
             e.printStackTrace();
         }
     }
