@@ -78,6 +78,11 @@ public class TableLineMessage implements Serializable {
     private TempEntry workStatus;
 
     /**
+     * 定位
+     */
+    private TempEntry location;
+
+    /**
      * 该天未填报
      * > 0 报警
      */

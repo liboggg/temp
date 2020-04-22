@@ -5,6 +5,7 @@ import com.yanjoy.temp.entity.base.TempParam;
 import com.yanjoy.temp.entity.excel.TableLineMessage;
 import com.yanjoy.temp.entity.push.TableLineMessageVo;
 import com.yanjoy.temp.utils.HttpUtil;
+import com.yanjoy.temp.utils.SnowflakeSequence;
 import com.yanjoy.temp.utils.TempTimeUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -13,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Service("pushService")
 public class PushServiceImpl implements PushService {
@@ -57,7 +58,8 @@ public class PushServiceImpl implements PushService {
             if (null == message) {
                 return;
             }
-            TableLineMessageVo pushVo = toPushVo(message, (int) System.currentTimeMillis());
+            SnowflakeSequence nextIndex = new SnowflakeSequence();
+            TableLineMessageVo pushVo = toPushVo(message, nextIndex.nextId());
             JSONObject jsonObject = (JSONObject) JSONObject.toJSON(pushVo);
             try {
                 String resp = HttpUtil.postJson(POST_URL, jsonObject, "UTF-8");
@@ -73,7 +75,7 @@ public class PushServiceImpl implements PushService {
 
     public List<TableLineMessageVo> getPushMessage(List<TableLineMessage> tableLineMsg) {
         List<TableLineMessageVo> result = new ArrayList<>();
-        int index = 1;
+        long index = 1;
         for (TableLineMessage tableLineMessage : tableLineMsg) {
             result.add(toPushVo(tableLineMessage, index));
             index++;
@@ -81,7 +83,7 @@ public class PushServiceImpl implements PushService {
         return result;
     }
 
-    private TableLineMessageVo toPushVo(TableLineMessage tableLineMessage, int index) {
+    private TableLineMessageVo toPushVo(TableLineMessage tableLineMessage, long index) {
         TableLineMessageVo tableLineMessageVo = new TableLineMessageVo();
         tableLineMessageVo.setActivity(ACTIVITY);
         tableLineMessageVo.setIpaddress("124.42.243.98");
@@ -109,7 +111,7 @@ public class PushServiceImpl implements PushService {
             tableLineMessageVo.setQ3(5);
         }
 
-        tableLineMessageVo.setQ4("广东省广州市[113.27,23.13]");
+        tableLineMessageVo.setQ4(tableLineMessage.getLocation().getName());
         if (tableLineMessage.getWorkStatus().getStatus() == (short) 0) {
             tableLineMessageVo.setQ5("1");
         } else if (tableLineMessage.getWorkStatus().getStatus() == (short) 4) {
@@ -148,7 +150,7 @@ public class PushServiceImpl implements PushService {
             tableLineMessageVo.setQ8("5");
         }
         tableLineMessageVo.setQ9("1");
-        tableLineMessageVo.setIndex(index + "");
+        tableLineMessageVo.setIndex(String.valueOf(index));
         tableLineMessageVo.setJoinid(tableLineMessage.getId());
         Random rand = new Random();
         int randNumber = rand.nextInt(50 - 30 + 1) + 30;

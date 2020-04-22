@@ -15,7 +15,7 @@ public interface TempVoService {
      * 项目id
      * 身份证
      */
-    List<AppTempVo> appListPage(TempParam param);
+    PageInfo<AppTempVo> appListPage(TempParam param);
 
     /**
      * app单条

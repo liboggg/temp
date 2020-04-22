@@ -1,13 +1,16 @@
 package com.yanjoy.temp.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yanjoy.temp.dao.*;
 import com.yanjoy.temp.entity.detail.TempDetail;
 import com.yanjoy.temp.entity.base.TempParam;
+import com.yanjoy.temp.entity.message.TempMessage;
 import com.yanjoy.temp.entity.user.TempUser;
 import com.yanjoy.temp.entity.vo.AppTempVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +43,73 @@ public class TempVoServiceImpl implements TempVoService {
     private OrgService orgService;
 
     @Override
-    public List<AppTempVo> appListPage(TempParam param) {
+    public PageInfo<AppTempVo> appListPage(TempParam param) {
         boolean check = checkList(param);
         if (!check) {
             throw new IllegalArgumentException("the idCard,projectId is not allowed be null");
         }
         PageHelper.startPage(param.getPageNum(), param.getPageSize());
-        return fillAppVoList(param);
-    }
+        List<TempMessage> list = messageMapper.getList(param);
+        PageInfo<TempMessage>  oldPageInfo = new PageInfo<>(list);
 
+        PageInfo<AppTempVo>  newPageInfo = new PageInfo<>();
+        List<AppTempVo> fillList = fillListPage(param, list);
+        BeanUtils.copyProperties(oldPageInfo, newPageInfo);
+        newPageInfo.setList(fillList);
+        return  newPageInfo;
+    }
+    private List<AppTempVo> fillListPage(TempParam param,List<TempMessage> list) {
+        final TempUser tempUser = userService.pullStatus(userMapper.selectByIdCard(param.getIdCard()));
+        final String name = orgService.getProjects(param.getProjectId()).get(0).get("name").toString();
+        return list.stream().map(a -> {
+                    AppTempVo obj = new AppTempVo();
+                    obj.setUser(tempUser);
+                    obj.setTitle(name);
+                    obj.setMessage(a);
+                    obj.setRoute(entryMapper.selectByPrimaryKey(a.getRoute()));
+                    obj.setContactHistory(entryMapper.selectByPrimaryKey(a.getContactHistory()));
+                    obj.setAreaHistory(entryMapper.selectByPrimaryKey(a.getAreaHistory()));
+                    obj.setPersonHistory(entryMapper.selectByPrimaryKey(a.getPersonHistory()));
+                    obj.setHealth(entryMapper.selectByPrimaryKey(a.getHealth()));
+
+                    TempDetail detail = detailMapper.selectByPrimaryKey(a.getDetailId());
+                    obj.setTemp(detailMapper.selectByPrimaryKey(detail.getId()));
+                    obj.setTempType(detail.getTempType());
+
+                    obj.setBloodTest(entryMapper.selectByPrimaryKey(a.getBloodTest()));
+                    obj.setNucleaseTest(entryMapper.selectByPrimaryKey(a.getNucleaseTest()));
+                    obj.setWorkStatus(entryMapper.selectByPrimaryKey(a.getWorkStatus()));
+                    obj.setLocation(entryMapper.selectByPrimaryKey(a.getLocation()));
+                    return obj;
+                }).collect(Collectors.toList());
+    }
+//    private PageInfo<AppTempVo> fillListPage(TempParam param) {
+//        final TempUser tempUser = userService.pullStatus(userMapper.selectByIdCard(param.getIdCard()));
+//        final String name = orgService.getProjects(param.getProjectId()).get(0).get("name").toString();
+//        PageHelper.startPage(param.getPageNum(), param.getPageSize());
+//        return new PageInfo(messageMapper.getList(param)
+//                .stream().map(a -> {
+//                    AppTempVo obj = new AppTempVo();
+//                    obj.setUser(tempUser);
+//                    obj.setTitle(name);
+//                    obj.setMessage(a);
+//                    obj.setRoute(entryMapper.selectByPrimaryKey(a.getRoute()));
+//                    obj.setContactHistory(entryMapper.selectByPrimaryKey(a.getContactHistory()));
+//                    obj.setAreaHistory(entryMapper.selectByPrimaryKey(a.getAreaHistory()));
+//                    obj.setPersonHistory(entryMapper.selectByPrimaryKey(a.getPersonHistory()));
+//                    obj.setHealth(entryMapper.selectByPrimaryKey(a.getHealth()));
+//
+//                    TempDetail detail = detailMapper.selectByPrimaryKey(a.getDetailId());
+//                    obj.setTemp(detailMapper.selectByPrimaryKey(detail.getId()));
+//                    obj.setTempType(detail.getTempType());
+//
+//                    obj.setBloodTest(entryMapper.selectByPrimaryKey(a.getBloodTest()));
+//                    obj.setNucleaseTest(entryMapper.selectByPrimaryKey(a.getNucleaseTest()));
+//                    obj.setWorkStatus(entryMapper.selectByPrimaryKey(a.getWorkStatus()));
+//                    obj.setLocation(entryMapper.selectByPrimaryKey(a.getLocation()));
+//                    return obj;
+//                }).collect(Collectors.toList()));
+//    }
     private List<AppTempVo> fillAppVoList(TempParam param) {
         final TempUser tempUser = userService.pullStatus(userMapper.selectByIdCard(param.getIdCard()));
 

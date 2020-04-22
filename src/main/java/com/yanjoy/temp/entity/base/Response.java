@@ -31,8 +31,6 @@ public class Response<T> {
      */
     private PageVo pageVo;
 
-    private PageInfo pageInfo;
-
 
     public static <T> Response SUCCESS(T data) {
         Response<T> response = new Response<>();
@@ -122,4 +120,5 @@ public class Response<T> {
     public void setPageVo(PageVo pageVo) {
         this.pageVo = pageVo;
     }
+
 }

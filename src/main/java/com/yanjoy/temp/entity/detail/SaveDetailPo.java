@@ -1,6 +1,5 @@
 package com.yanjoy.temp.entity.detail;
 
-import com.yanjoy.temp.entity.detail.TempDetail;
 import com.yanjoy.temp.entity.entry.TempEntry;
 import com.yanjoy.temp.entity.message.TempMessage;
 import lombok.Data;

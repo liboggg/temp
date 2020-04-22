@@ -144,6 +144,18 @@
             <result column="workSChange" jdbcType="DECIMAL" property="whetherChange"/>
         </association>
 
+        <association property="location" javaType="com.yanjoy.temp.entity.entry.TempEntry">
+            <id column="locationId" jdbcType="VARCHAR" property="id"/>
+            <result column="locationIdCard" jdbcType="VARCHAR" property="idCard"/>
+            <result column="locationMsgId" jdbcType="VARCHAR" property="messageId"/>
+            <result column="locationStatus" jdbcType="DECIMAL" property="status"/>
+            <result column="locationName" jdbcType="VARCHAR" property="name"/>
+            <result column="locationCode" jdbcType="VARCHAR" property="typeCode"/>
+            <result column="locationCreateDate" jdbcType="TIMESTAMP" property="createDate"/>
+            <result column="locationCreateDay" jdbcType="VARCHAR" property="createDay"/>
+            <result column="locationChange" jdbcType="DECIMAL" property="whetherChange"/>
+        </association>
+
         <collection property="temp" ofType="com.yanjoy.temp.entity.detail.TempDetail">
             <id column="detailId" jdbcType="VARCHAR" property="id"/>
             <result column="detailMsgId" jdbcType="VARCHAR" property="messageId"/>
@@ -283,8 +295,17 @@
         workS.TYPE_CODE workSCode,
         workS.CREATE_DATE workSCreateDate,
         workS.CREATE_DAY workSCreateDay,
-        workS.WHETHER_CHANGE workSChange
+        workS.WHETHER_CHANGE workSChange,
 
+        location.ID locationId,
+        location.ID_CARD locationIdCard,
+        location.MESSAGE_ID locationMsgId,
+        location."STATUS" locationStatus,
+        location."NAME" locationName,
+        location.TYPE_CODE locationCode,
+        location.CREATE_DATE locationCreateDate,
+        location.CREATE_DAY locationCreateDay,
+        location.WHETHER_CHANGE locationChange
 
     </sql>
 
@@ -303,6 +324,7 @@
         from (select
         ID, ID_CARD, PROVINCE, ADDRESS, ROUTE, CONTACT_HISTORY, AREA_HISTORY, PERSON_HISTORY,
         HEALTH, CREATE_DATE, CREATE_DAY,NOTE,DETAIL_ID ,BLOOD_TEST,NUCLEASE_TEST,WORK_STATUS,
+        LACATION,
         dense_rank() over(partition by ID_CARD,CREATE_DAY order by CREATE_DATE desc) rank
         from YJ_TEMP_MESSAGE ) e
         where e.rank = 1
@@ -332,6 +354,7 @@
         left join YJ_TEMP_ENTRY blood on blood.id = ytm.BLOOD_TEST
         left join YJ_TEMP_ENTRY nuclease on nuclease.id = ytm.NUCLEASE_TEST
         left join YJ_TEMP_ENTRY workS on workS.id = ytm.WORK_STATUS
+        left join YJ_TEMP_ENTRY location on location.id = ytm.LACATION
         <where>
             <if test="projectId != null">
                 ytu.PROJECT_ID = #{projectId}
@@ -362,6 +385,7 @@
         from (select
         ID, ID_CARD, PROVINCE, ADDRESS, ROUTE, CONTACT_HISTORY, AREA_HISTORY, PERSON_HISTORY,
         HEALTH, CREATE_DATE, CREATE_DAY,NOTE,DETAIL_ID ,BLOOD_TEST,NUCLEASE_TEST,WORK_STATUS,
+        LACATION,
         dense_rank() over(partition by ID_CARD,CREATE_DAY order by CREATE_DATE desc) rank
         from YJ_TEMP_MESSAGE ) e
         where e.rank = 1
@@ -391,6 +415,7 @@
         left join YJ_TEMP_ENTRY blood on blood.id = ytm.BLOOD_TEST
         left join YJ_TEMP_ENTRY nuclease on nuclease.id = ytm.NUCLEASE_TEST
         left join YJ_TEMP_ENTRY workS on workS.id = ytm.WORK_STATUS
+        left join YJ_TEMP_ENTRY location on location.id = ytm.LACATION
         <where>
             <if test="projectId != null">
                 ytu.PROJECT_ID = #{projectId}

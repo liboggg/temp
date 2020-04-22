@@ -16,7 +16,7 @@ public class TempController {
     private TempMonitorService service;
 
     @PostMapping("/save")
-    private Response save(@RequestBody SaveDetailPo param) {
+    public Response save(@RequestBody SaveDetailPo param) {
         int i = 0;
         try {
             i = service.save(param);

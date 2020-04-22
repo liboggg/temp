@@ -1,5 +1,6 @@
 package com.yanjoy.temp.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.yanjoy.temp.entity.base.Response;
 import com.yanjoy.temp.entity.base.TempParam;
@@ -25,13 +26,14 @@ public class TempVoController {
 
     @GetMapping("/appList")
     public Response appList(TempParam param) {
-        List<AppTempVo> list = new ArrayList<>();
+        PageInfo<AppTempVo> pageInfo= new PageInfo();
         try {
-            list = service.appListPage(param);
+            pageInfo = service.appListPage(param);
         } catch (Exception e) {
             e.printStackTrace();
+            return Response.ERROR(pageInfo,e.getMessage());
         }
-        PageInfo pageInfo = new PageInfo(list);
+
         return Response.SUCCESS(pageInfo);
     }
 
